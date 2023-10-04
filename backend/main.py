@@ -4,6 +4,7 @@ from typing import List
 from pydantic import BaseModel
 from db_utils import get_stock_info
 from news_utils import get_naver_news
+from exchange_rate import get_exchange_rate
 
 app = FastAPI()
 
@@ -32,6 +33,10 @@ class NewsItem(BaseModel):
     title: str
     link: str
 
+class ExchangeRateItem(BaseModel):
+    currency: str
+    exchange_rate: str
+
 
 @app.get("/stock/{stock_name}", response_model=StockInfo)
 def read_stock_info(stock_name: str):
@@ -47,3 +52,7 @@ def read_news(search_query: str):
         raise HTTPException(status_code=404, detail="News not found")
 
     return news_info
+
+@app.get("/exchange_rate", response_model=List[ExchangeRateItem])
+def read_exchange_rate():
+    return get_exchange_rate()
