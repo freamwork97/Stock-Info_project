@@ -24,18 +24,18 @@ app.add_middleware(
 
 
 class StockInfo(BaseModel):
-    company: str
-    code: str
-    last_update: str
-    daily_prices: List[dict]
+    company: str             # 주식명
+    code: str                # 주식코드
+    last_update: str         # 마지막 데이터베이스 저장일
+    daily_prices: List[dict] # 주가
 
 class NewsItem(BaseModel):
-    title: str
-    link: str
+    title: str               # 뉴스 제목
+    link: str                # 뉴스 링크
 
 class ExchangeRateItem(BaseModel):
-    currency: str
-    exchange_rate: str
+    currency: str            # 통화(달러, 엔화 등등)
+    exchange_rate: str       # 환율
 
 
 @app.get("/stock/{stock_name}", response_model=StockInfo)
