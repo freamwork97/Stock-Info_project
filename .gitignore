@@ -1,0 +1,5 @@
+conf/
+
+database/
+
+backend/__pycache__
