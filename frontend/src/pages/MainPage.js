@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ExchangeRateTable from './ExchangeRateTable';
+import ExchangeRateTable from '../components/ExchangeRateTable';
 
 function MainPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,7 +48,6 @@ function MainPage() {
           <ExchangeRateTable exchangeRates={exchangeRates} />
         </div>      
       </div>
-
     </div>
   );
 }

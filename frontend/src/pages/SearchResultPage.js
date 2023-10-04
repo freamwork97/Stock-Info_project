@@ -89,7 +89,7 @@ function SearchResultPage() {
 
   return (
     <div className="container mt-5">
-           <div className="d-flex justify-content-left align-items-center p-1">
+      <div className="d-flex justify-content-left align-items-center p-1">
         <input
           type="text"
           className="form-control col-1 p-2 w-25 "
