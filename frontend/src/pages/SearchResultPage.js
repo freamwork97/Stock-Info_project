@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Chart from 'chart.js/auto';
+import { useNavigate } from 'react-router-dom';
 
 function SearchResultPage() {
   const { searchTerm } = useParams();
@@ -10,6 +11,13 @@ function SearchResultPage() {
   const [stockprice, setStockPrice] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
+
+  const [searchTerm2, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate(`/search/${searchTerm2}`);
+  };
 
   useEffect(() => {
     // 뉴스
@@ -81,6 +89,27 @@ function SearchResultPage() {
 
   return (
     <div className="container mt-5">
+           <div className="d-flex justify-content-left align-items-center p-1">
+        <input
+          type="text"
+          className="form-control col-1 p-2 w-25 "
+          placeholder="검색어를 입력하세요"
+          value={searchTerm2}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button 
+          onClick={handleSearch} 
+          className='bi bi-search p-2'>
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 width="16" 
+                 height="16" 
+                 fill="currentColor" 
+                 class="bi bi-search" 
+                 viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg>
+        </button>
+      </div>
       <div className="row">
         <div className="col-md-8">
           <div className="card mb-4">
