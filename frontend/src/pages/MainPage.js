@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
 import ExchangeRateTable from '../components/ExchangeRateTable';
 import InputButton from '../components/InputButton';
-function MainPage() {
-  // const [searchTerm, setSearchTerm] = useState('');
-  const [exchangeRates, setExchangeRates] = useState([]);
-  // const navigate = useNavigate();
 
-  // const handleSearch = () => {
-  //   navigate(`/search/${searchTerm}`);
-  // };
+function MainPage() {
+  const [exchangeRates, setExchangeRates] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:8000/exchange_rate')
@@ -21,7 +15,7 @@ function MainPage() {
   return (
     <div className="container p-5 mt-5">
       <h1 className="text-center">메인페이지</h1>
-      <div className='w-25 d-flex justify-content-center mx-auto'>
+      <div className='w-25 mx-auto'>
         <InputButton  IB={InputButton}/>
       </div>
       <div className='card'>
@@ -30,7 +24,6 @@ function MainPage() {
           <ExchangeRateTable exchangeRates={exchangeRates} />
         </div>      
       </div>
-
     </div>
   );
 }

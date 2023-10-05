@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Chart from 'chart.js/auto';
-// import { useNavigate } from 'react-router-dom';
 import InputButton from '../components/InputButton';
 
 function SearchResultPage() {
@@ -12,13 +11,6 @@ function SearchResultPage() {
   const [stockprice, setStockPrice] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
-
-  // const [searchTerm2, setSearchTerm] = useState('');
-  // const navigate = useNavigate();
-
-  // const handleSearch = () => {
-  //   navigate(`/search/${searchTerm2}`);
-  // };
 
   useEffect(() => {
     // 뉴스
