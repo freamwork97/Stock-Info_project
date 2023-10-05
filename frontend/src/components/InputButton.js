@@ -34,7 +34,6 @@ function InputButton({ IB }) {
             </button>
         </div>
     </form>
-
   );
 }
 
