@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import InputButton from '../components/InputButton';
 import FinancialStatements from '../components/financialStatements';
+import News from '../components/News';
 
 function SearchResultPage() {
   const { searchTerm } = useParams();
-  const [news, setNews] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({});
   const [stockChart, setStockChart] = useState([]);
   const [stockprice, setStockPrice] = useState([]);
@@ -15,16 +15,7 @@ function SearchResultPage() {
  
 
   useEffect(() => {
-    // 뉴스
-    const fetchNews = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/news/${searchTerm}`);
-        const data = await response.json();
-        setNews(data);
-      } catch (error) {
-        console.error('Error fetching news:', error);
-      }
-    };
+
 
     // 주식데이터
     const fetchCompanyInfo = async () => {
@@ -46,7 +37,6 @@ function SearchResultPage() {
       }
     };
 
-    fetchNews();
     fetchCompanyInfo();
   }, [searchTerm]);
 
@@ -89,18 +79,7 @@ function SearchResultPage() {
       </div>
       <div className="row">
         <div className="col-md-8">
-          <div className="card mb-4">
-            <div className="card-body">
-              <h2 className="card-title">뉴스</h2>
-              <ul className="list-unstyled">
-                {news.map((item, index) => (
-                  <li key={index} className="mb-3">
-                    <a href={item.link} target="_blank" rel="noopener noreferrer">{item.title}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <News searchTerm={searchTerm}/>
         </div>
         <div className="col-md-4">
           <div className="card mb-4">
