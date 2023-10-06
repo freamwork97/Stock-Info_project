@@ -1,3 +1,4 @@
+######################################################
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
@@ -5,7 +6,7 @@ from pydantic import BaseModel
 from db_utils import get_stock_info
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
-
+#######################################################
 app = FastAPI()
 
 # CORS 설정

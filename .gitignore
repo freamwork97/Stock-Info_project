@@ -1,5 +1,5 @@
 conf/
-
 database/
-
 backend/__pycache__
+financial_statements/
+corpCode/
