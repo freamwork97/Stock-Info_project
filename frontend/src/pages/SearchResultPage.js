@@ -11,6 +11,7 @@ function SearchResultPage() {
   const [stockprice, setStockPrice] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
+  const [financialStatements, setFinancialStatements] = useState([]);
 
   useEffect(() => {
     // 뉴스
@@ -43,6 +44,12 @@ function SearchResultPage() {
         console.error('Error fetching company info:', error);
       }
     };
+
+     // 검색어를 이용하여 재무제표 데이터 가져오기
+     fetch(`http://localhost:8000/financial_statements/${searchTerm}`)
+     .then(response => response.json())
+     .then(data => setFinancialStatements(data))
+     .catch(error => console.error('Error fetching financial statements:', error));
 
     fetchNews();
     fetchCompanyInfo();
@@ -124,6 +131,42 @@ function SearchResultPage() {
             </div>
           </div>
         </div>
+        <div className='row'>
+        {/* 재무제표 정보 */}
+        <div className='col-md-12'>
+          <div className='card mb-4'>
+            <div className='card-body'>
+              <h2 className='card-title'>재무제표 정보</h2>
+              <table className='table'>
+                <thead>
+                  <tr>
+                    <th>사업연도</th>
+                    <th>재무제표구분</th>
+                    <th>계정명</th>
+                    <th>당기명</th>
+                    <th>당기일자</th>
+                    <th>당기금액</th>
+                    <th>통화</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {financialStatements.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.사업연도}</td>
+                      <td>{item.재무제표구분}</td>
+                      <td>{item.계정명}</td>
+                      <td>{item.당기명}</td>
+                      <td>{item.당기일자}</td>
+                      <td>{item.당기금액}</td>
+                      <td>{item.통화}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   );
