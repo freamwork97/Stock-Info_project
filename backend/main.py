@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from db_utils import get_stock_info
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
+from corp_code import get_financial_statements_by_name
 #######################################################
 app = FastAPI()
 
@@ -39,12 +40,12 @@ class ExchangeRateItem(BaseModel):
     exchange_rate: str       # 환율
 
 
+# 주식정보
 @app.get("/stock/{stock_name}", response_model=StockInfo)
 def read_stock_info(stock_name: str):
     return get_stock_info(stock_name)
 
-
-
+# 뉴스
 @app.get("/news/{search_query}", response_model=List[NewsItem])
 def read_news(search_query: str):
     news_info = get_naver_news(search_query)
@@ -54,6 +55,16 @@ def read_news(search_query: str):
 
     return news_info
 
+# 환율
 @app.get("/exchange_rate", response_model=List[ExchangeRateItem])
 def read_exchange_rate():
     return get_exchange_rate()
+
+# 재무제표
+@app.get("/financial_statements/{stock_name}")
+def get_financial_statements(stock_name: str):
+    try:
+        result = get_financial_statements_by_name(stock_name)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
