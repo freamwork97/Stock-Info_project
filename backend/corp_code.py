@@ -1,5 +1,3 @@
-# utils.py
-
 import pandas as pd
 
 def load_financial_statements():
