@@ -1,4 +1,3 @@
-import pandas as pd
 from db_utils import load_financial_statements, find_stock_code_by_name
 
 def get_financial_statements_by_name(stock_name: str):
