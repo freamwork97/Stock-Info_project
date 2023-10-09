@@ -7,8 +7,7 @@ from db_utils import get_stock_info,find_stock_code_by_name
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
-from pykrx import stock
-from datetime import datetime,timedelta
+from stock_price import get_stock_price
 #######################################################
 app = FastAPI()
 
@@ -73,21 +72,8 @@ def get_financial_statements(stock_name: str):
     
 
 @app.get("/get_stock_price/{stock_name}")
-def get_stock_price(stock_name: str):
-    now = datetime.now()
-    end_date = now.strftime("%Y%m%d")
-    start_date = (now - timedelta(days=7)).strftime("%Y%m%d")
-    stock_code = find_stock_code_by_name(stock_name)
-
-    try:
-        stock_price = stock.get_market_ohlcv_by_date(start_date, end_date, stock_code)
-
-        if not stock_price.empty:
-            return stock_price["종가"].tolist()
-        else:
-            return {"error": "주가정보를 찾을 수 없습니다."}
-    except Exception as e:
-        return {"error": str(e)}
+def get_stock_price_endpoint(stock_name: str):
+    return get_stock_price(stock_name)
 
 
 
