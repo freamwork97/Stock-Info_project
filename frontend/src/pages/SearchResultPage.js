@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import Chart from 'chart.js/auto';
 import InputButton from '../components/InputButton';
 import FinancialStatements from '../components/financialStatements';
 import News from '../components/News';
+import fetchStockData from '../components/fetchStockData';
+import drawChart from '../components/drawChart';
+
 
 function SearchResultPage() {
   const { searchTerm } = useParams();
@@ -12,64 +14,13 @@ function SearchResultPage() {
   const [stockprice, setStockPrice] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
- 
 
   useEffect(() => {
-
-
-    // 주식데이터
-    const fetchCompanyInfo = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/stock/${searchTerm}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch company info');
-        }
-        const data = await response.json();
-        setCompanyInfo(data);
-        const latestData = data.daily_prices.slice(0, 7); // 차트를 위해서 7일치 데이터베이스에 저장되어있는 데이터
-        setStockChart(latestData);
-        const latestData2 = data.daily_prices.slice(0, 1); 
-        // 하루의 데이터 고민중 전일가만 가져오게할지(현 상태 유지)
-        // 검색할때마다 바뀌게 만들지(fastapi쪽 수정 따로 라이브러리 활용)
-        setStockPrice(latestData2);
-      } catch (error) {
-        console.error('Error fetching company info:', error);
-      }
-    };
-
-    fetchCompanyInfo();
+    fetchStockData(searchTerm, setCompanyInfo, setStockChart, setStockPrice);
   }, [searchTerm]);
 
-  // 주식차트
   useEffect(() => {
-    if (stockChart.length > 0) {
-      const chartData = {
-        labels: stockChart.reverse().map(data => data.date),
-        datasets: [
-          {
-            label: 'Closing Price',
-            data: stockChart.map(data => data.close),
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      };
-
-      const ctx = canvasRef.current.getContext('2d');
-      
-      if (myChart.current) {
-        myChart.current.destroy();
-      }
-
-      myChart.current = new Chart(ctx, {
-        type: 'line',
-        data: chartData,
-      });
-
-      return () => {
-        myChart.current.destroy();
-      };
-    }
+    drawChart(stockChart, canvasRef, myChart);
   }, [stockChart]);
 
   return (
@@ -107,7 +58,7 @@ function SearchResultPage() {
         </div>
 
         {/* 재무제표 정보 */}
-       <FinancialStatements searchTerm={searchTerm} />
+        <FinancialStatements searchTerm={searchTerm} />
       </div>
     </div>
   );
