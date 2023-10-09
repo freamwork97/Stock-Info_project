@@ -3,10 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
-from db_utils import get_stock_info
+from db_utils import get_stock_info,find_stock_code_by_name
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
+from pykrx import stock
+from datetime import datetime,timedelta
 #######################################################
 app = FastAPI()
 
@@ -68,3 +70,26 @@ def get_financial_statements(stock_name: str):
         return result
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    
+
+@app.get("/get_stock_price/{stock_name}")
+def get_stock_price(stock_name: str):
+    now = datetime.now()
+    end_date = now.strftime("%Y%m%d")
+    start_date = (now - timedelta(days=7)).strftime("%Y%m%d")
+    stock_code = find_stock_code_by_name(stock_name)
+
+    try:
+        stock_price = stock.get_market_ohlcv_by_date(start_date, end_date, stock_code)
+
+        if not stock_price.empty:
+            return stock_price["종가"].tolist()
+        else:
+            return {"error": "주가정보를 찾을 수 없습니다."}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+
+
+
