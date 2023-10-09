@@ -87,6 +87,28 @@ CREATE TABLE IF NOT EXISTS daily_price (
     PRIMARY KEY (code, date))
 ```
 
+```sql
+CREATE TABLE IF NOT EXISTS financial_statements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bsns_year VARCHAR(255),
+    stock_code VARCHAR(255),
+    reprt_code VARCHAR(255),
+    fs_div VARCHAR(255),
+    sj_div VARCHAR(255),
+    account_nm VARCHAR(255),
+    thstrm_nm VARCHAR(255),
+    thstrm_dt VARCHAR(255),
+    thstrm_amount VARCHAR(255),
+    thstrm_add_amount VARCHAR(255),
+    frmtrm_nm VARCHAR(255),
+    frmtrm_dt VARCHAR(255),
+    frmtrm_amount VARCHAR(255),
+    frmtrm_add_amount VARCHAR(255),
+    bfefrmtrm_nm VARCHAR(255),
+    bfefrmtrm_dt VARCHAR(255),
+    brefrmtrm_amount VARCHAR(255),
+    currency VARCHAR(255))
+```
 ## 메인페이지
 - 메인페이지는 심플하게
 - 검색창
