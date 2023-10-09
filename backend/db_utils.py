@@ -13,6 +13,7 @@ user = database_info['user']
 password = database_info['password']
 db_name = database_info['db_name']
 
+# DB접속
 def get_connection():
     return pymysql.connect(
         host=host,
@@ -22,6 +23,7 @@ def get_connection():
         charset='utf8'
     )
 
+# 주식정보
 def get_stock_info(stock_name):
     conn = get_connection()
     try:
@@ -61,6 +63,7 @@ def get_stock_info(stock_name):
     finally:
         conn.close()
 
+# 재무제표
 def load_financial_statements():
     conn = get_connection()
     try:
@@ -84,6 +87,7 @@ def load_financial_statements():
     finally:
         conn.close()
 
+# 종목명으로 종목코드 검색
 def find_stock_code_by_name(stock_name: str):
     conn = get_connection()
     try:
