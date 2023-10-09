@@ -1,4 +1,4 @@
-import Chart from 'chart.js/auto'
+import Chart from 'chart.js/auto';
 
 const drawChart = (stockChart, canvasRef, myChart) => {
   if (stockChart.length > 0) {
