@@ -12,17 +12,6 @@ user = database_info['user']
 password = database_info['password']
 db_name = database_info['db_name']
 
-config = configparser.ConfigParser()
-config.read('../conf/config.ini')
-
-# 데이터베이스 연결 정보 가져오기
-database_info = config['database']
-host = database_info['host']
-user = database_info['user']
-password = database_info['password']
-db_name = database_info['db_name']
-
-
 def load_financial_statements():
     conn = pymysql.connect(
         host=host,
@@ -34,7 +23,7 @@ def load_financial_statements():
     try:
         with conn.cursor() as curs:
             sql = """
-                SELECT bsns_year, stock_code, reprt_code, fs_div, sj_div, account_nm, 
+                SELECT bsns_year, LPAD(stock_code, 6, '0'), reprt_code, fs_div, sj_div, account_nm, 
                     thstrm_nm, thstrm_dt, thstrm_amount, thstrm_add_amount, frmtrm_nm, 
                     frmtrm_dt, frmtrm_amount, frmtrm_add_amount, bfefrmtrm_nm, bfefrmtrm_dt, 
                     brefrmtrm_amount, currency 
@@ -53,15 +42,33 @@ def load_financial_statements():
         conn.close()
 
 def find_stock_code_by_name(stock_name: str):
-    corp_code3 = pd.read_csv('../financial_statements/corp_code3.csv', encoding='utf-8')
-    stock_code = corp_code3[corp_code3['기업명'] == stock_name]['종목코드'].values
-    # print(stock_code)
-    return str(stock_code[0]) if len(stock_code) > 0 else None
+    conn = pymysql.connect(
+        host=host,
+        user=user,
+        password=password,
+        db=db_name,
+        charset='utf8'
+    )
+    try:
+        with conn.cursor() as curs:
+            sql = """
+                SELECT code
+                FROM company_info
+                WHERE company = %s
+            """
+            curs.execute(sql, (stock_name,))
+            stock_code = curs.fetchone()
+            if stock_code is not None:
+                return str(stock_code[0])
+            else:
+                return None
+    finally:
+        conn.close()
+
 
 
 def get_financial_statements_by_name(stock_name: str):
     financial_statements_df = load_financial_statements()
-    print(financial_statements_df)
     stock_code = find_stock_code_by_name(stock_name)
     print(stock_code)
     if stock_code is None:
