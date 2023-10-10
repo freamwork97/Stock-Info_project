@@ -7,16 +7,16 @@
     - FastAPI
     - BootStrap
     
-- 데이터수집은 Python로 Mysql 데이터 저장
-- 뉴스는 네이버에서 크롤링
-- 환율 네이버에서 크롤링
-- 재무제표 https://opendart.fss.or.kr/intro/main.do 활용
-- 디자인은 BootStrap활용
-- 주가데이터는 네이버 크롤링으로 데이터베이스 저장 및 pykrx 라이브러리 활용
+- 데이터수집: Python로 Mysql 데이터 저장
+- 뉴스: 네이버 크롤링
+- 환율: 네이버 크롤링
+- 재무제표: https://opendart.fss.or.kr/intro/main.do 활용
+- 디자인: BootStrap활용
+- 주가데이터: 네이버 크롤링으로 데이터베이스 저장 및 pykrx 라이브러리 활용
 
-- 가능하면 머신러닝도 활용하고싶다.(고민중)
-- 투자레포트 작성 공간 고민중
-- 주요지수 크롤링으로 할듯
+- 머신러닝: 고민중
+- 투자레포트: 고민중
+- 주요지수: 네이버 크롤링으로 할듯
 
 ## React package
 ```{
