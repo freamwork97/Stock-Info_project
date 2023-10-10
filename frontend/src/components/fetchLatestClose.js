@@ -7,9 +7,11 @@ const fetchStockPrice = async (searchTerm, setStockPrice2) => {
     const data2 = await response.json();
     const latestPrices = {
       고가: data2.고가.slice(-1)[0],
+      전일종가:data2.종가.slice(-2)[0],
       시가: data2.시가.slice(-1)[0],
       저가: data2.저가.slice(-1)[0],
-      종가: data2.종가.slice(-1)[0]
+      종가: data2.종가.slice(-1)[0],
+      거래량: data2.거래량.slice(-1)[0]
     };
     setStockPrice2(latestPrices);
   } catch (error) {

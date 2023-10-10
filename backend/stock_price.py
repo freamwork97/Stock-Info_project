@@ -14,7 +14,8 @@ def get_stock_price(stock_name: str):
                 "시가": stock_price["시가"].tolist(),
                 "고가": stock_price["고가"].tolist(),
                 "저가": stock_price["저가"].tolist(),
-                "종가": stock_price["종가"].tolist()
+                "종가": stock_price["종가"].tolist(),
+                "거래량": stock_price["거래량"].tolist()
             }
         if not stock_price.empty:
             return result

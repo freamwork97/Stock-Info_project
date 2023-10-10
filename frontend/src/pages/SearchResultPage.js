@@ -55,11 +55,12 @@ function SearchResultPage() {
                 <ul className="list-unstyled">
                   {stockprice.map((data, index) => (
                     <li key={index}>
-                      Date: {data.date}<br></br>
-                      전일종가: {data.close}<br></br>
+                      {/* Date: {data.date}<br></br> */}
+                      전일종가: {stockprice2.전일종가}<br></br>
                       시가: {stockprice2.시가}<br></br>
                       고가: {stockprice2.고가}<br></br>
-                      저가: {stockprice2.저가}
+                      저가: {stockprice2.저가}<br></br>
+                      거래량: {stockprice2.거래량}
                     </li>
                   ))}
                 </ul>
