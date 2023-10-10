@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
-from db_utils import get_stock_info
+from db_utils import get_stock_info,get_company_names
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
@@ -76,6 +76,10 @@ def get_stock_price_endpoint(stock_name: str):
     return get_stock_price(stock_name)
 
 
-
+# 종목명 리스트를 가져오는 엔드포인트
+@app.get("/company_names/", response_model=List[str])
+def read_company_names(prefix: str):
+    company_names = get_company_names(prefix)
+    return company_names
 
 

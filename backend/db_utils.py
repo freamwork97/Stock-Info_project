@@ -105,3 +105,19 @@ def find_stock_code_by_name(stock_name: str):
                 return None
     finally:
         conn.close()
+
+# 종목명 가져오기
+def get_company_names(prefix):
+    conn = get_connection()
+    try:
+        with conn.cursor() as curs:
+            sql = """
+                SELECT company
+                FROM company_info
+                WHERE company LIKE %s
+            """
+            curs.execute(sql, (f'{prefix}%',))
+            company_names = [row[0] for row in curs.fetchall()]
+            return company_names
+    finally:
+        conn.close()

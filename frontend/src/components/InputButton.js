@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
 function InputButton({ IB }) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const navigate = useNavigate();
-    const handleSearch = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [suggestedCompanies, setSuggestedCompanies] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      // API 호출을 통해 종목명 가져오기
+      if (searchTerm) {
+          fetch(`http://localhost:8000/company_names/?prefix=${searchTerm}`)
+              .then(response => response.json())
+              .then(data => setSuggestedCompanies(data.slice(0, 5)));
+              
+      }
+  }, [searchTerm]);
+
+  const handleSearch = () => {
       navigate(`/search/${searchTerm}`);
-    };
+  };
+
+  const handleSuggestionClick = (company) => {
+      setSearchTerm(company);
+      setSuggestedCompanies([]);
+  };
+
 
   return (
     <form>
@@ -33,6 +51,18 @@ function InputButton({ IB }) {
                 </svg>
             </button>
         </div>
+          {suggestedCompanies.length > 0 && (
+            <ul className="list-group">
+              {suggestedCompanies.map((company, index) => (
+                <li key={index}
+                    className="list-group-item"
+                    onClick={() => handleSuggestionClick(company)}
+                  >
+                  {company}
+                </li>
+                ))}
+            </ul>
+            )}
     </form>
   );
 }
