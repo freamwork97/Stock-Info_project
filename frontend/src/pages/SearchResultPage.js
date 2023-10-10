@@ -51,7 +51,7 @@ function SearchResultPage() {
                 </h3>
               </div>
               <div className="stock-chart">
-                <h2>주가 정보</h2>
+                <h2>전일가 정보</h2>
                 <ul className="list-unstyled">
                   {stockprice.map((data, index) => (
                     <li key={index}>
@@ -68,7 +68,6 @@ function SearchResultPage() {
             </div>
           </div>
         </div>
-
         {/* 재무제표 정보 */}
         <FinancialStatements searchTerm={searchTerm} />
       </div>
