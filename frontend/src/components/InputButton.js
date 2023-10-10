@@ -5,13 +5,20 @@ import { useNavigate } from 'react-router-dom';
 function InputButton({ IB }) {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
-  
+    const navigate2 = useNavigate();
     const handleSearch = () => {
       navigate(`/search/${searchTerm}`);
+    };
+    const navigater = () => {
+      navigate2("/");
     };
   return (
     <form>
         <div className="input-group mb-3">
+            <button
+              type='button' 
+              onClick={navigater}>메인
+            </button>
             <input
                 type="text"
                 className="form-control col-1 p-2"
