@@ -76,7 +76,7 @@ def get_stock_price_endpoint(stock_name: str):
     return get_stock_price(stock_name)
 
 
-# 종목명 리스트를 가져오는 엔드포인트
+# 종목명 리스트
 @app.get("/company_names/", response_model=List[str])
 def read_company_names(prefix: str):
     company_names = get_company_names(prefix)
