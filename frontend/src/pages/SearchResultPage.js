@@ -32,7 +32,7 @@ function SearchResultPage() {
   return (
     <div className="container mt-5">
       <div className='w-25 input-group'>
-        <a href='/' className="fs-3 text-decoration-none me-2">메인</a>
+        <a href='/' className="fs-3 me-2">메인</a>
         <InputButton IB={InputButton}/>
       </div>
       <div className="row">

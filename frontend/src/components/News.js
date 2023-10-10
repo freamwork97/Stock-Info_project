@@ -25,7 +25,6 @@ function News({ searchTerm }) {
           {news.map((item, index) => (
             <li key={index} className="mb-3">
               <a href={item.link} 
-                 className='text-decoration-none' 
                  target="_blank" 
                  rel="noopener noreferrer">{item.title}</a>
             </li>
