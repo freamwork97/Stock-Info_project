@@ -32,7 +32,7 @@ function SearchResultPage() {
   return (
     <div className="container mt-5">
       <div className='w-25 input-group'>
-        <a href='/' className="fs-2 text-decoration-none me-2">메인</a>
+        <a href='/' className="fs-3 text-decoration-none me-2">메인</a>
         <InputButton IB={InputButton}/>
       </div>
       <div className="row">
@@ -48,19 +48,18 @@ function SearchResultPage() {
                   ({companyInfo.code}) 
                 </h2>
                 <h3>
-                  현재가: {stockprice2}원
-                </h3>
+                현재가: {stockprice2.종가}
+              </h3>
               </div>
               <div className="stock-chart">
-                <h2>전일가 정보</h2>
                 <ul className="list-unstyled">
                   {stockprice.map((data, index) => (
                     <li key={index}>
-                      {/* Date: {data.date}<br></br> */}
-                      {/* Open: {data.open}<br></br>  */}
-                      고가: {data.high}<br></br>
-                      저가: {data.low}<br></br>
-                      종가: {data.close}
+                      Date: {data.date}<br></br>
+                      전일종가: {data.close}<br></br>
+                      시가: {stockprice2.시가}<br></br>
+                      고가: {stockprice2.고가}<br></br>
+                      저가: {stockprice2.저가}
                     </li>
                   ))}
                 </ul>
