@@ -5,13 +5,14 @@ import FinancialStatements from '../components/financialStatements';
 import News from '../components/News';
 import fetchStockData from '../components/fetchStockData';
 import drawChart from '../components/drawChart';
-
+import fetchStockPrice from '../components/fetchLatestClose';
 
 function SearchResultPage() {
   const { searchTerm } = useParams();
   const [companyInfo, setCompanyInfo] = useState({});
   const [stockChart, setStockChart] = useState([]);
   const [stockprice, setStockPrice] = useState([]);
+  const [stockprice2, setStockPrice2] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
 
@@ -23,6 +24,11 @@ function SearchResultPage() {
     drawChart(stockChart, canvasRef, myChart);
   }, [stockChart]);
 
+  useEffect(() => {
+    fetchStockPrice(searchTerm, setStockPrice2);
+    console.log(searchTerm);
+  }, [searchTerm]);
+  
   return (
     <div className="container mt-5">
       <div className='w-25'>
@@ -36,7 +42,13 @@ function SearchResultPage() {
           <div className="card mb-4">
             <div className="card-body">
               <div className="company-info mb-4">
-                <h2>{companyInfo.company} ({companyInfo.code})</h2>
+                <h2>
+                  {companyInfo.company} 
+                  ({companyInfo.code}) 
+                </h2>
+                <h3>
+                  현재가:{stockprice2}원
+                </h3>
               </div>
               <div className="stock-chart">
                 <h2>주가 정보</h2>
