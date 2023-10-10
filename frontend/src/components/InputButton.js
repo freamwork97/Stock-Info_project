@@ -14,7 +14,7 @@ function InputButton({ IB }) {
               .then(response => response.json())
               .then(data => setSuggestedCompanies(data.slice(0, 5)));
               
-      } else {
+      }else {
         setSuggestedCompanies([]); // 검색어가 없을 때 목록 초기화
       }
   }, [searchTerm]);
