@@ -70,7 +70,7 @@ def get_financial_statements(stock_name: str):
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     
-
+# 종가
 @app.get("/get_stock_price/{stock_name}")
 def get_stock_price_endpoint(stock_name: str):
     return get_stock_price(stock_name)
