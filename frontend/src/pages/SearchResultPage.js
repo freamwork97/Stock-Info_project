@@ -28,11 +28,12 @@ function SearchResultPage() {
     fetchStockPrice(searchTerm, setStockPrice2);
     console.log(searchTerm);
   }, [searchTerm]);
-  
+
   return (
     <div className="container mt-5">
-      <div className='w-25'>
-        <InputButton  IB={InputButton}/>
+      <div className='w-25 input-group'>
+        <a href='/' className="fs-2 text-decoration-none">메인</a>
+        <InputButton IB={InputButton}/>
       </div>
       <div className="row">
         <div className="col-md-8">
@@ -47,7 +48,7 @@ function SearchResultPage() {
                   ({companyInfo.code}) 
                 </h2>
                 <h3>
-                  현재가:{stockprice2}원
+                  현재가: {stockprice2}원
                 </h3>
               </div>
               <div className="stock-chart">
@@ -55,11 +56,11 @@ function SearchResultPage() {
                 <ul className="list-unstyled">
                   {stockprice.map((data, index) => (
                     <li key={index}>
-                      Date: {data.date}<br></br>
-                      Open: {data.open}<br></br> 
-                      High: {data.high}<br></br>
-                      Low: {data.low}<br></br>
-                      Close: {data.close}
+                      {/* Date: {data.date}<br></br> */}
+                      {/* Open: {data.open}<br></br>  */}
+                      고가: {data.high}<br></br>
+                      저가: {data.low}<br></br>
+                      종가: {data.close}
                     </li>
                   ))}
                 </ul>
@@ -67,6 +68,7 @@ function SearchResultPage() {
               </div>
             </div>
           </div>
+          <hr></hr>
         </div>
         {/* 재무제표 정보 */}
         <FinancialStatements searchTerm={searchTerm} />
