@@ -54,7 +54,11 @@ function InputButton({ IB }) {
             </button>
         </div>
           {suggestedCompanies.length > 0 && (
-            <ul className="list-group" style={{ position: "absolute", zIndex: 1000 }}>
+            <ul className="list-group" 
+                style={{ 
+                      position: "absolute", 
+                      zIndex: 1000,
+                    }}>
               {suggestedCompanies.map((company, index) => (
                 <li key={index}
                     className="list-group-item"
