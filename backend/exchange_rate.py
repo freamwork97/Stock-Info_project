@@ -17,4 +17,4 @@ def get_exchange_rate():
             "exchange_rate": exchange_rate
         })
 
-    return exchange_rates[0:5]
+    return exchange_rates[0:7]
