@@ -5,7 +5,7 @@ const drawChart2 = (stockChart, canvasRef, myChart) => {
     const prices = Object.values(stockChart);
 
     const chartData = {
-        labels: dates.reverse(),
+        labels: dates,
         datasets: [
             {
                 label: 'Closing Price',

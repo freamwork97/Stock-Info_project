@@ -31,6 +31,7 @@ function MainPage() {
           };
         });
         setKeyIndex(keyIndexWithLatestClose);
+        handleKeyClick('코스피');
       })
       .catch(error => console.error('Error:', error));
   }, []);
