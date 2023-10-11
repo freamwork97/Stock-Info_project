@@ -42,30 +42,41 @@ function MainPage() {
 
   return (
     <div className="container p-5 mt-5">
-      <h1 className="text-center">메인페이지</h1>
+      <h1 className="text-center mb-4">메인페이지</h1>
       <div className='w-25 mx-auto'>
         <InputButton IB={InputButton}/>
       </div>
       <div className='card'>
-        <div className='card-body p-3'>
-          <h2 className="text-center mt-2">환율 정보</h2>
-          <ExchangeRateTable exchangeRates={exchangeRates} />
-        </div>      
-      </div>
-      <div className="mt-4">
-        {Object.keys(keyIndex).map((indexName) => (
-          <div key={indexName}>
-            <div onClick={() => handleKeyClick(indexName)}>
-              {indexName}
-              <span> {keyIndex[indexName].latestClose}</span>
-            </div>
-            {selectedKey === indexName && showChart && (
-              <div>
-                <ChartComponent stockChart={keyIndex[indexName].data} />
+        <div className="row mb-4">
+          <div className="col-md-6">
+            <div className="card mb-4">
+              <div className="card-body p-3">
+                <h2 className="text-center mb-3">환율 정보</h2>
+                <ExchangeRateTable exchangeRates={exchangeRates} />
               </div>
-            )}
+            </div>
           </div>
-        ))}
+          <div className="col-md-6">
+            <div className="card mb-4">
+              <div className="card-body p-3">
+                <h2 className="text-center mb-3">주요 지수</h2>
+                {Object.keys(keyIndex).map((indexName) => (
+                  <div key={indexName}>
+                    <div onClick={() => handleKeyClick(indexName)}>
+                      {indexName}
+                      <span> - 가격: {keyIndex[indexName].latestClose}</span>
+                    </div>
+                    {selectedKey === indexName && showChart && (
+                      <div>
+                        <ChartComponent stockChart={keyIndex[indexName].data} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

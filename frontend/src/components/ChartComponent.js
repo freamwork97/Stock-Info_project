@@ -14,7 +14,7 @@ function ChartComponent({ stockChart }) {
   return (
     <div>
       <h3 className="text-center mt-3">지수 차트</h3>
-      <canvas ref={canvasRef}></canvas>
+      <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: '150px' }} />
     </div>
   );
 }
