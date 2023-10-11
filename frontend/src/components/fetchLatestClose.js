@@ -1,4 +1,4 @@
-const fetchStockPrice = async (searchTerm, setStockPrice2) => {
+const fetchStockPrice = async (searchTerm, setStockPrice) => {
   try {
     const response = await fetch(`http://localhost:8000/get_stock_price/${searchTerm}`);
     if (!response.ok) {
@@ -13,7 +13,7 @@ const fetchStockPrice = async (searchTerm, setStockPrice2) => {
       종가: data.종가.slice(-1)[0],
       거래량: data.거래량.slice(-1)[0]
     };
-    setStockPrice2(latestPrices);
+    setStockPrice(latestPrices);
   } catch (error) {
     console.error('Error fetching latest stock prices:', error);
   }
