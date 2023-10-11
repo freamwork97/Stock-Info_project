@@ -14,7 +14,7 @@ def get_key_index():
     dji = fdr.DataReader('DJI',start_date)
     # S&P500
     sp = fdr.DataReader('US500',start_date)
-    # 닐케이225
+    # 닛케이225
     jp = fdr.DataReader('N225',start_date)
 
     # 결측치 제거
@@ -34,12 +34,12 @@ def get_key_index():
     jp.index = jp.index.strftime('%Y-%m-%d')
     
     result = {
-        'kospi': kospi['Close'].to_dict(),
-        'kosdaq': kosdaq['Close'].to_dict(),
-        'nasdaq': nasdaq['Close'].to_dict(),
-        'dji': dji['Close'].to_dict(),
-        'sp': sp['Close'].to_dict(),
-        'jp': jp['Close'].to_dict()
+        '코스피': kospi['Close'].to_dict(),
+        '코스닥': kosdaq['Close'].to_dict(),
+        '나스닥': nasdaq['Close'].to_dict(),
+        '다우존스': dji['Close'].to_dict(),
+        'S&P500': sp['Close'].to_dict(),
+        '닛케이225': jp['Close'].to_dict()
     }
 
     return result
