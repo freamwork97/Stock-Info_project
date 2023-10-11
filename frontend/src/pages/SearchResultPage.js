@@ -12,12 +12,11 @@ function SearchResultPage() {
   const [companyInfo, setCompanyInfo] = useState({});
   const [stockChart, setStockChart] = useState([]);
   const [stockprice, setStockPrice] = useState([]);
-  const [stockprice2, setStockPrice2] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
 
   useEffect(() => {
-    fetchStockData(searchTerm, setCompanyInfo, setStockChart, setStockPrice);
+    fetchStockData(searchTerm, setCompanyInfo, setStockChart);
   }, [searchTerm]);
 
   useEffect(() => {
@@ -25,7 +24,7 @@ function SearchResultPage() {
   }, [stockChart]);
 
   useEffect(() => {
-    fetchStockPrice(searchTerm, setStockPrice2);
+    fetchStockPrice(searchTerm, setStockPrice);
     console.log(searchTerm);
   }, [searchTerm]);
 
@@ -48,21 +47,16 @@ function SearchResultPage() {
                   ({companyInfo.code}) 
                 </h2>
                 <h3>
-                현재가: {stockprice2.종가}
+                현재가: {stockprice.종가}
               </h3>
               </div>
               <div className="stock-chart">
                 <ul className="list-unstyled">
-                  {stockprice.map((data, index) => (
-                    <li key={index}>
-                      {/* Date: {data.date}<br></br> */}
-                      전일종가: {stockprice2.전일종가}<br></br>
-                      시가: {stockprice2.시가}<br></br>
-                      고가: {stockprice2.고가}<br></br>
-                      저가: {stockprice2.저가}<br></br>
-                      거래량: {stockprice2.거래량}
-                    </li>
-                  ))}
+                      전일종가: {stockprice.전일종가}<br></br>
+                      시가: {stockprice.시가}<br></br>
+                      고가: {stockprice.고가}<br></br>
+                      저가: {stockprice.저가}<br></br>
+                      거래량: {stockprice.거래량}
                 </ul>
                 <canvas ref={canvasRef} width="100" height="50"></canvas>
               </div>

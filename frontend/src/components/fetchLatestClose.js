@@ -4,14 +4,14 @@ const fetchStockPrice = async (searchTerm, setStockPrice2) => {
     if (!response.ok) {
       throw new Error('Failed to fetch latest stock prices');
     }
-    const data2 = await response.json();
+    const data = await response.json();
     const latestPrices = {
-      고가: data2.고가.slice(-1)[0],
-      전일종가:data2.종가.slice(-2)[0],
-      시가: data2.시가.slice(-1)[0],
-      저가: data2.저가.slice(-1)[0],
-      종가: data2.종가.slice(-1)[0],
-      거래량: data2.거래량.slice(-1)[0]
+      고가: data.고가.slice(-1)[0],
+      전일종가:data.종가.slice(-2)[0],
+      시가: data.시가.slice(-1)[0],
+      저가: data.저가.slice(-1)[0],
+      종가: data.종가.slice(-1)[0],
+      거래량: data.거래량.slice(-1)[0]
     };
     setStockPrice2(latestPrices);
   } catch (error) {
