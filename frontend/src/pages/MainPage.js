@@ -46,10 +46,10 @@ function MainPage() {
       <div className='w-25 mx-auto'>
         <InputButton IB={InputButton}/>
       </div>
-      <div className='card'>
+
         <div className="row mb-4">
           <div className="col-md-6">
-            <div className="card mb-4">
+            <div className="card mx-3 mt-5 mb-4">
               <div className="card-body p-3">
                 <h2 className="text-center mb-3">환율 정보</h2>
                 <ExchangeRateTable exchangeRates={exchangeRates} />
@@ -57,7 +57,7 @@ function MainPage() {
             </div>
           </div>
           <div className="col-md-6">
-            <div className="card mb-4">
+            <div className="card me-3 mt-5 mb-4">
               <div className="card-body p-3">
                 <h2 className="text-center mb-3">주요 지수</h2>
                 {Object.keys(keyIndex).map((indexName) => (
@@ -77,7 +77,7 @@ function MainPage() {
             </div>
           </div>
         </div>
-      </div>
+   
     </div>
   );
 }
