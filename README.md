@@ -13,10 +13,10 @@
 - 재무제표: https://opendart.fss.or.kr/intro/main.do 활용
 - 디자인: BootStrap활용
 - 주가데이터: 네이버 크롤링으로 데이터베이스 저장 및 pykrx 라이브러리 활용
+- 주요지수: FinanceDataReader라이브러리 활용
 
 - 머신러닝: 고민중
 - 투자레포트: 고민중
-- 주요지수: 네이버 크롤링으로 할듯
 
 ## React package
 ```{
