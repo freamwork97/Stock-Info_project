@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 def get_key_index():
     now = datetime.now()
-    start_date = (now - timedelta(days=7)).strftime("%Y%m%d")
+    start_date = (now - timedelta(days=14)).strftime("%Y%m%d")
     # 코스피
     kospi = fdr.DataReader('KS11', start_date)
     # 코스닥
