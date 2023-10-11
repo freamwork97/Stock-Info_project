@@ -21,10 +21,10 @@ function MainPage() {
       .then(response => response.json())
       .then(data => {
         const keyIndexWithLatestClose = {};
-        Object.keys(data).forEach(indexName => {
+        Object.keys(data).forEach(indexName => {           // 각 데이터 지수마다 반복
           const dates = Object.keys(data[indexName]);
-          const latestDate = dates[dates.length - 1];
-          const latestClose = data[indexName][latestDate];
+          const latestDate = dates[dates.length - 1];      // 최근 날짜
+          const latestClose = data[indexName][latestDate]; // 최근 종가
           keyIndexWithLatestClose[indexName] = {
             latestClose,
             data: data[indexName]
@@ -64,7 +64,7 @@ function MainPage() {
                   <div key={indexName}>
                     <div onClick={() => handleKeyClick(indexName)}>
                       {indexName}
-                      <span> - 가격: {keyIndex[indexName].latestClose}</span>
+                      <span> {keyIndex[indexName].latestClose.toFixed(2)}</span>
                     </div>
                     {selectedKey === indexName && showChart && (
                       <div>

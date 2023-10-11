@@ -1,3 +1,4 @@
+// 주요지수 차트
 import Chart from 'chart.js/auto';
 
 const drawChart2 = (stockChart, canvasRef, myChart) => {
