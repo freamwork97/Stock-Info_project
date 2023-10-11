@@ -82,7 +82,8 @@ def read_company_names(prefix: str):
     company_names = get_company_names(prefix)
     return company_names
 
-# 주요지수
 @app.get("/key_index")
 def read_key_index():
-    return get_key_index()
+    data = get_key_index()
+    return data
+
