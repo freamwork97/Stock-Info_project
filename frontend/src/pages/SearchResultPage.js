@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import InputButton from '../components/InputButton';
 import FinancialStatements from '../components/financialStatements';
 import News from '../components/News';
@@ -14,6 +15,11 @@ function SearchResultPage() {
   const [stockprice, setStockPrice] = useState([]);
   const canvasRef = useRef(null);
   const myChart = useRef(null);
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate(`/Chart/${searchTerm}`);
+  };
 
   useEffect(() => {
     fetchStockData(searchTerm, setCompanyInfo, setStockChart);
@@ -32,7 +38,7 @@ function SearchResultPage() {
     <div className="container mt-5">
       <div className='w-25 input-group'>
         <a href='/' className="fs-3 me-2">메인</a>
-        <InputButton IB={InputButton}/>
+        <InputButton IB={InputButton} />
       </div>
       <div className="row">
         <div className="col-md-8">
@@ -42,7 +48,7 @@ function SearchResultPage() {
           <div className="card mb-4">
             <div className="card-body">
               <div className="company-info mb-4">
-                <h2>
+                <h2 onClick={handleSearch}>
                   {companyInfo.company} 
                   ({companyInfo.code}) 
                 </h2>
