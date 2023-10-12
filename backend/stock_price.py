@@ -11,6 +11,7 @@ def get_stock_price(stock_name: str):
     try:
         stock_price = stock.get_market_ohlcv_by_date(start_date, end_date, stock_code)
         result = {
+                "날짜":stock_price.index.strftime("%Y%m%d").tolist(),
                 "시가": stock_price["시가"].tolist(),
                 "고가": stock_price["고가"].tolist(),
                 "저가": stock_price["저가"].tolist(),
