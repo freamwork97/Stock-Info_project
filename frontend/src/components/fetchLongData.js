@@ -1,5 +1,5 @@
 // 데이터 좀 많이 가져오기
-export const fetchStockData = async (searchTerm) => {
+export const fetchLongData = async (searchTerm) => {
     const response = await fetch(`http://localhost:8000/get_stock_price/${searchTerm}`);
     const data = await response.json();
     return {
