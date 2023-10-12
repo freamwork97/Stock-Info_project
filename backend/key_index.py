@@ -18,12 +18,12 @@ def get_key_index():
     jp = fdr.DataReader('N225',start_date)
 
     # 결측치 제거
-    kospi.fillna(method = 'ffill') 
-    kosdaq.fillna(method = 'ffill') 
-    nasdaq.fillna(method = 'ffill') 
-    dji.fillna(method = 'ffill') 
-    sp.fillna(method = 'ffill') 
-    jp.fillna(method = 'ffill') 
+    kospi=kospi.fillna(method = 'ffill') 
+    kosdaq=kosdaq.fillna(method = 'ffill') 
+    nasdaq=nasdaq.fillna(method = 'ffill') 
+    dji=dji.fillna(method = 'ffill') 
+    sp=sp.fillna(method = 'ffill') 
+    jp=jp.fillna(method = 'ffill') 
 
     # 날짜 형식 변경
     kospi.index = kospi.index.strftime('%Y-%m-%d')
