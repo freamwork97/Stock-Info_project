@@ -64,7 +64,7 @@ function SearchResultPage() {
                       저가: {stockprice.저가}<br></br>
                       거래량: {stockprice.거래량}
                 </ul>
-                <canvas ref={canvasRef} width="100" height="50"></canvas>
+                <canvas onClick={handleSearch} ref={canvasRef} width="100" height="50"></canvas>
               </div>
             </div>
           </div>
