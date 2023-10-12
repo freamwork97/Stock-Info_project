@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, /*useRef*/ } from 'react';
 import { useParams } from 'react-router-dom';
 import fetchStockPrice from '../components/fetchLatestClose';
 import fetchStockData from '../components/fetchStockData';
@@ -10,7 +10,9 @@ function ChartDetailPage() {
   const [stockprice, setStockPrice] = useState([]);
   console.log(stockprice)
   const [companyInfo, setCompanyInfo] = useState({});
-  
+  // const canvasRef = useRef(null);
+  // const myChart = useRef(null);
+
   useEffect(() => {
     fetchStockData(searchTerm, setCompanyInfo);
   }, [searchTerm]);
