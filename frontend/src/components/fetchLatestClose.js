@@ -12,10 +12,6 @@ const fetchStockPrice = async (searchTerm, setStockPrice) => {
       저가: data.저가.slice(-1)[0],
       종가: data.종가.slice(-1)[0],
       거래량: data.거래량.slice(-1)[0],
-      전체종가: data.종가,
-      전체고가: data.고가,
-      전체저가: data.저가,
-      전체시가: data.시가
     };
     setStockPrice(latestPrices);
   } catch (error) {
