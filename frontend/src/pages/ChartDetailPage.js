@@ -47,7 +47,7 @@ function ChartDetailPage() {
       <div className='card mt-4'>
         <div id='chart-area' className="chart-area table-responsive">
           <h2 className='mt-3 mx-3'>
-            <canvas ref={canvasRef} width="1500" height="400" ></canvas>
+            <canvas ref={canvasRef} width="4000" height="400" ></canvas>
           </h2>
         </div>
         <div id="info-box" className="mt-3 mx-3 mb-2"></div>
