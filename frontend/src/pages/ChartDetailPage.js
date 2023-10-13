@@ -27,7 +27,7 @@ function ChartDetailPage() {
   }, [LongData]);
 
   return (
-    <div className='container mt-5'>
+    <div className='container mt-4'>
       <h2>
         {companyInfo.company}
         ({companyInfo.code})
@@ -38,7 +38,7 @@ function ChartDetailPage() {
             <canvas ref={canvasRef} width="1500" height="500"></canvas>
           </h2>
         </div>
-        <div id="info-box" className="mt-3 mx-3"></div>
+        <div id="info-box" className="mt-3 mx-3 mb-2"></div>
       </div>
     </div>
   );

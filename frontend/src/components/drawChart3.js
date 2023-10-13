@@ -28,7 +28,7 @@ export const newDrawCandlestickChart = (priceData, canvasRef) => {
         const close = priceData.종가[dataIndex];
         const trade = priceData.거래량[dataIndex];
   
-        const infoText = `날짜: ${date}, 시가: ${open}, 종가: ${close}, 저가: ${low}, 고가: ${high} 거래량: ${trade}`;
+        const infoText = `날짜: ${date} 시가: ${open} 종가: ${close} 저가: ${low} 고가: ${high} 거래량: ${trade}`;
   
         infoBox.innerText = infoText;
       }
