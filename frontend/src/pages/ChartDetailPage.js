@@ -11,6 +11,18 @@ function ChartDetailPage() {
   const [companyInfo, setCompanyInfo] = useState({});
 
   useEffect(() => {
+    if (LongData) {
+      newDrawCandlestickChart(LongData, canvasRef);
+      scrollToRight();
+    }
+  }, [LongData]);
+
+  const scrollToRight = () => {
+    const chartArea = document.getElementById('chart-area');
+    chartArea.scrollLeft = chartArea.scrollWidth;
+  };
+
+  useEffect(() => {
     fetchLongData(searchTerm).then(data => {
       setLongData(data);
     });
@@ -33,9 +45,9 @@ function ChartDetailPage() {
         ({companyInfo.code})
       </h2>
       <div className='card mt-4'>
-        <div className="chart-area table-responsive">
+        <div id='chart-area' className="chart-area table-responsive">
           <h2 className='mt-3 mx-3'>
-            <canvas ref={canvasRef} width="1500" height="400"></canvas>
+            <canvas ref={canvasRef} width="1500" height="400" ></canvas>
           </h2>
         </div>
         <div id="info-box" className="mt-3 mx-3 mb-2"></div>
