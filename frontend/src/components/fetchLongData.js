@@ -8,5 +8,6 @@ export const fetchLongData = async (searchTerm) => {
       고가: data.고가,
       저가: data.저가,
       종가: data.종가,
+      거래량: data.거래량
     };
   };

@@ -18,7 +18,7 @@ export const newDrawCandlestickChart = (priceData, canvasRef) => {
     function handleMouseMove(event) {
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
-      
+
       const dataIndex = Math.floor(x / (candleWidth + xSpacing));
       if (dataIndex >= 0 && dataIndex < numDataPoints) {
         const date = priceData.날짜[dataIndex];
@@ -26,8 +26,9 @@ export const newDrawCandlestickChart = (priceData, canvasRef) => {
         const low = priceData.저가[dataIndex];
         const open = priceData.시가[dataIndex];
         const close = priceData.종가[dataIndex];
+        const trade = priceData.거래량[dataIndex];
   
-        const infoText = `날짜: ${date}, 시가: ${open}, 종가: ${close}, 저가: ${low}, 고가: ${high}`;
+        const infoText = `날짜: ${date}, 시가: ${open}, 종가: ${close}, 저가: ${low}, 고가: ${high} 거래량: ${trade}`;
   
         infoBox.innerText = infoText;
       }
