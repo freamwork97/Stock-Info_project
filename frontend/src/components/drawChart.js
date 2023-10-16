@@ -85,7 +85,12 @@ const CandlestickChart = ({ priceData }) => {
         xAxis: {
           data: priceData.날짜,
         },
-        yAxis: {},
+        yAxis: {
+          scale: true,
+          splitArea: {
+            show: true
+          }
+        },
         dataZoom: [
       {
         type: 'inside',
