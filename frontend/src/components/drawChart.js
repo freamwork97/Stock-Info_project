@@ -1,6 +1,6 @@
-// 간략한 주가 차트
 import Chart from 'chart.js/auto';
 
+// 간략한 주가 차트
 const drawChart = (stockChart, canvasRef, myChart) => {
   if (stockChart.length > 0) {
     const chartData = {
