@@ -67,8 +67,48 @@ const drawChart2 = (stockChart, canvasRef, myChart) => {
   };
 };
 
+// 이평선 계산
+const calculateMovingAverage = (data, period) => {
+  const result = [];
+  for (let i = 0; i < data.length; i++) {
+    if (i < period - 1) {
+      result.push('-');
+      continue;
+    }
+    let sum = 0;
+    for (let j = 0; j < period; j++) {
+      sum += data[i - j];
+    }
+    result.push((sum / period).toFixed(2));
+  }
+  return result;
+};
+
+// 이평선 차트
+const drawMovingAverages = (myChart, priceData, selectedMovingAverages, movingAverageColors) => {
+  const movingAverages = selectedMovingAverages.map(period => {
+    return calculateMovingAverage(priceData.종가, period);
+  });
+
+  const series = selectedMovingAverages.map((period, index) => {
+    return {
+      type: 'line',
+      data: movingAverages[index],
+      smooth: true,
+      lineStyle: {
+        color: movingAverageColors[period]
+      },
+      name: `${period}일 이동평균`
+    };
+  });
+
+  myChart.setOption({
+    series: [...myChart.getOption().series, ...series]
+  });
+};
+
 // 캔들 스틱
-const CandlestickChart = ({ priceData }) => {
+const CandlestickChart = ({ priceData, selectedMovingAverages, movingAverageColors }) => {
   useEffect(() => {
     if (priceData) {
       const chartDom = document.getElementById('candlestickChart');
@@ -92,21 +132,21 @@ const CandlestickChart = ({ priceData }) => {
           }
         },
         dataZoom: [
-      {
-        type: 'inside',
-        xAxisIndex: [0, 1],
-        start: 98,
-        end: 100
-      },
-      {
-        show: true,
-        xAxisIndex: [0, 1],
-        type: 'slider',
-        top: '92%',
-        start: 98,
-        end: 100
-      }
-    ],
+          {
+            type: 'inside',
+            xAxisIndex: [0, 1],
+            start: 98,
+            end: 100
+          },
+          {
+            show: true,
+            xAxisIndex: [0, 1],
+            type: 'slider',
+            top: '92%',
+            start: 98,
+            end: 100
+          }
+        ],
         series: [
           {
             type: 'candlestick',
@@ -127,12 +167,13 @@ const CandlestickChart = ({ priceData }) => {
       };
 
       myChart.setOption(option);
+      drawMovingAverages(myChart, priceData, selectedMovingAverages, movingAverageColors);
 
       return () => {
         myChart.dispose();
       };
     }
-  }, [priceData]);
+  }, [priceData, selectedMovingAverages, movingAverageColors]);
 
   return <div id="candlestickChart" style={{ width: '100%', height: '500px' }} />;
 };
