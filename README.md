@@ -151,7 +151,6 @@ CREATE TABLE IF NOT EXISTS financial_statements (
 ## 차트 클릭
 - 차트 상세페이지
 - 차트 캔들 사용 상승(red) 하락(blue)
-- 날짜 와 종가 기준
 - 클릭 시점 현재가 + 전일가를 이용한 차트
 - 일봉, 주봉, 월봉 구현
 - 보조지표(차트와 같이 볼 지표는 설정가능하도록)
