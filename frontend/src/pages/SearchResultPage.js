@@ -5,7 +5,7 @@ import InputButton from '../components/InputButton';
 import FinancialStatements from '../components/financialStatements';
 import News from '../components/News';
 import fetchStockData from '../components/fetchStockData';
-import drawChart from '../components/drawChart';
+import {drawChart} from '../components/drawChart';
 import fetchStockPrice from '../components/fetchLatestClose';
 
 function SearchResultPage() {

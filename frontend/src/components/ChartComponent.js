@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import drawChart2 from './drawChart2';
+import {drawChart2} from './drawChart';
 
 function ChartComponent({ stockChart }) {
   const canvasRef = useRef(null);
