@@ -22,6 +22,7 @@ function ChartDetailPage() {
   return (
     <div className='container mt-4'>
       <h2>
+      <a href={'/search/'+searchTerm}  className="fs-3 me-2">이전</a>
         {companyInfo.company}
         ({companyInfo.code})
       </h2>
