@@ -20,6 +20,10 @@ function SearchResultPage() {
     navigate(`/Chart/${searchTerm}`);
   };
 
+  const fetchStockPriceData = () => {
+    fetchStockPrice(searchTerm, setStockPrice);
+  };
+  
   useEffect(() => {
     fetchStockData(searchTerm, setCompanyInfo, setStockChart);
   }, [searchTerm]);
@@ -32,6 +36,14 @@ function SearchResultPage() {
     fetchStockPrice(searchTerm, setStockPrice);
     console.log(searchTerm);
   }, [searchTerm]);
+
+  useEffect(() => {
+    fetchStockPriceData(); // 초기 데이터 호출
+
+    const interval = setInterval(fetchStockPriceData, 20000); // 20초마다 호출
+
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 clearInterval
+  });
 
   return (
     <div className="container mt-5">
