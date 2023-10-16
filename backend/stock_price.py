@@ -5,7 +5,7 @@ from db_utils import find_stock_code_by_name
 def get_stock_price(stock_name: str):
     now = datetime.now()
     end_date = now.strftime("%Y%m%d")
-    start_date = (now - timedelta(days=365)).strftime("%Y%m%d")
+    start_date = (now - timedelta(days=3650)).strftime("%Y%m%d")
     stock_code = find_stock_code_by_name(stock_name)
 
     try:
