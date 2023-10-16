@@ -1,3 +1,4 @@
+// 캔들스틱
 import React, { useEffect } from 'react';
 import * as echarts from 'echarts';
 
@@ -6,7 +7,6 @@ const CandlestickChart = ({ priceData }) => {
       if (priceData) {
         const chartDom = document.getElementById('candlestickChart');
         const myChart = echarts.init(chartDom);
-  
         const option = {
           tooltip: {
             trigger: 'axis',
@@ -38,10 +38,10 @@ const CandlestickChart = ({ priceData }) => {
             {
               type: 'candlestick',
               data: priceData.시가.map((_, i) => [
-                priceData.시가[i], // 시가
-                priceData.종가[i], // 종가
-                priceData.저가[i], // 저가
-                priceData.고가[i], // 고가
+                priceData.시가[i], 
+                priceData.종가[i], 
+                priceData.저가[i], 
+                priceData.고가[i], 
               ]),
             },
           ],
