@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {fetchStockData, fetchLongData} from '../components/fetchStockData';
-import CandlestickChart from '../components/drawChart3';
+import {CandlestickChart} from '../components/drawChart';
 
 
 function ChartDetailPage() {
