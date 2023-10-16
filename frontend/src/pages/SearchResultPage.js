@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import InputButton from '../components/InputButton';
 import FinancialStatements from '../components/financialStatements';
 import News from '../components/News';
-import fetchStockData from '../components/fetchStockData';
+import {fetchStockData,fetchStockPrice} from '../components/fetchStockData';
 import {drawChart} from '../components/drawChart';
-import fetchStockPrice from '../components/fetchLatestClose';
 
 function SearchResultPage() {
   const { searchTerm } = useParams();
@@ -36,7 +35,7 @@ function SearchResultPage() {
 
   return (
     <div className="container mt-5">
-      <div className='w-25 input-group'>
+      <div className='input-group'>
         <a href='/' className="fs-3 me-2">메인</a>
         <InputButton IB={InputButton} />
       </div>

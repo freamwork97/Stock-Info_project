@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { newDrawCandlestickChart } from '../components/drawChart3';
-import { fetchLongData } from '../components/fetchLongData';
-import fetchStockData from '../components/fetchStockData';
+import {fetchStockData, fetchLongData} from '../components/fetchStockData';
 
 function ChartDetailPage() {
   const { searchTerm } = useParams();
