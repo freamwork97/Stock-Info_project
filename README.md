@@ -19,7 +19,8 @@
 - 투자레포트: 고민중
 
 ## React package
-```{
+```
+{
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -30,6 +31,7 @@
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.0",
+    "echarts": "^5.4.3",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
