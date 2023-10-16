@@ -18,6 +18,22 @@ const CandlestickChart = ({ priceData }) => {
             data: priceData.날짜,
           },
           yAxis: {},
+                dataZoom: [
+        {
+          type: 'inside',
+          xAxisIndex: [0, 1],
+          start: 98,
+          end: 100
+        },
+        {
+          show: true,
+          xAxisIndex: [0, 1],
+          type: 'slider',
+          top: '92%',
+          start: 98,
+          end: 100
+        }
+      ],
           series: [
             {
               type: 'candlestick',
