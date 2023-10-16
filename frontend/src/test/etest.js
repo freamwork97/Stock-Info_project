@@ -1,5 +1,5 @@
 import React from 'react'
-import Echart from './echarttest'
+import Echart from './EchartBarTest'
 
 const BarChart = () => {
   // 차트 CSS 정의하기
