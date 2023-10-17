@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
-from db_utils import get_stock_info,get_company_names,create_post
+from db_utils import get_stock_info,get_company_names,create_post,get_post
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
@@ -96,3 +96,9 @@ def read_key_index():
 @app.post("/posts/")
 def create_post_handler(post: PostCreate):
     return create_post(post.title, post.author, post.content)
+
+# 게시글 목록
+@app.get("/post")
+def get_post_list():
+    return get_post()
+

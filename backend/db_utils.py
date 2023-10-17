@@ -135,3 +135,17 @@ def create_post(title, author, content):
             conn.commit()
     finally:
         conn.close()
+
+# 게시글 목록
+def get_post():
+    conn = get_connection()
+    try:
+        with conn.cursor() as curs:
+            sql = """
+               select * from posts 
+            """
+            curs.execute(sql)
+            result = curs.fetchall()  # 가져온 데이터를 변수에 저장
+            return result  
+    finally:
+        conn.close()

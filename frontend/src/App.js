@@ -26,7 +26,7 @@ function App() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <a className="nav-link" href="/Post">게시판</a>
+              <a className="nav-link" href="/post">게시판</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/test">테스트</a>
@@ -39,7 +39,7 @@ function App() {
           <Route path="/" element={<MainPage />} /> {/*메인페이지*/}
           <Route path="/search/:searchTerm" element={<SearchResultPage />} /> {/*검색결과*/}
           <Route path="/chart/:searchTerm" element={<ChartDetailPage />} /> {/*차트상세*/}
-          <Route path='/Post' element={<PostListPage/>}/> {/*게시판*/}
+          <Route path='/post' element={<PostListPage/>}/> {/*게시판*/}
           <Route path="/write" element={<WritePage/>} /> {/* 글쓰기 */}
           <Route path="/post/:id" element={<PostDetailPage/>} /> {/*게시글상세내용*/}
           <Route path="/test.bar" element={<BarChart />} /> {/*EchartTest*/}
