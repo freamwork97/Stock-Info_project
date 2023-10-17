@@ -1,7 +1,7 @@
 a {text-decoration-line: none;}
 
 .navbar {
-    padding: 15px 0;
+    padding: 10px 0;
   }
   
   .navbar-brand {
@@ -17,6 +17,6 @@ a {text-decoration-line: none;}
   }
   
   .navbar-nav .nav-link {
-    font-size: 18px;
+    font-size: 25px;
   }
   
