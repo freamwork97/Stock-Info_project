@@ -46,7 +46,7 @@ function SearchResultPage() {
   });
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <div className='input-group'>
         <a href='/' className="fs-3 me-2">
         <svg xmlns="http://www.w3.org/2000/svg" 
