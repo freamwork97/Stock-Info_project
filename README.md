@@ -33,6 +33,7 @@
     "chart.js": "^4.4.0",
     "echarts": "^5.4.3",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.9.0-beta.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
@@ -66,7 +67,6 @@
   }
 }
 ```
-
 ## 데이터베이스 구성
 
 ```sql
