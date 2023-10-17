@@ -43,7 +43,6 @@ function MainPage() {
 
   return (
     <div className="container p-5">
-      <h1 className="text-center mb-4">메인페이지</h1>
       <div className='w-25 mx-auto'>
         <InputButton IB={InputButton}/>
       </div>
