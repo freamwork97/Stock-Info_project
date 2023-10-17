@@ -98,7 +98,7 @@ const drawMovingAverages = (myChart, priceData, selectedMovingAverages, movingAv
       lineStyle: {
         color: movingAverageColors[period]
       },
-      name: `${period}일 이동평균`
+      name: `MA${period}`
     };
   });
 

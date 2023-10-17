@@ -91,7 +91,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(5)}
                       onChange={() => handleMovingAverageSelect(5)}
                     />
-                    5일 이동평균
+                    MA5
                   </label>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -101,7 +101,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(20)}
                       onChange={() => handleMovingAverageSelect(20)}
                     />
-                    20일 이동평균
+                    MA20
                   </label>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -111,7 +111,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(60)}
                       onChange={() => handleMovingAverageSelect(60)}
                     />
-                    60일 이동평균
+                    MA60
                   </label>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -121,7 +121,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(120)}
                       onChange={() => handleMovingAverageSelect(120)}
                     />
-                    120일 이동평균
+                    MA120
                   </label>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -131,7 +131,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(200)}
                       onChange={() => handleMovingAverageSelect(200)}
                     />
-                    200일 이동평균
+                    MA200
                   </label>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -141,7 +141,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(225)}
                       onChange={() => handleMovingAverageSelect(225)}
                     />
-                    225일 이동평균
+                    MA225
                   </label>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -151,7 +151,7 @@ function ChartDetailPage() {
                       checked={selectedMovingAverages.includes(720)}
                       onChange={() => handleMovingAverageSelect(720)}
                     />
-                    720일 이동평균
+                    MA720
                   </label>
                 </Dropdown.Item>
               </Dropdown.Menu>
