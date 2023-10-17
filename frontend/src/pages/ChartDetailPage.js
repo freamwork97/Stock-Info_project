@@ -85,74 +85,95 @@ function ChartDetailPage() {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>
+                  <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(5)}
                       onChange={() => handleMovingAverageSelect(5)}
                     />
                     MA5
                   </label>
+                </div>
                 </Dropdown.Item>
                 <Dropdown.Item>
+                <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(20)}
                       onChange={() => handleMovingAverageSelect(20)}
                     />
                     MA20
                   </label>
+                </div>
                 </Dropdown.Item>
                 <Dropdown.Item>
+                <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(60)}
                       onChange={() => handleMovingAverageSelect(60)}
                     />
                     MA60
                   </label>
+                </div>
                 </Dropdown.Item>
                 <Dropdown.Item>
+                <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(120)}
                       onChange={() => handleMovingAverageSelect(120)}
                     />
                     MA120
                   </label>
+                </div>
                 </Dropdown.Item>
                 <Dropdown.Item>
+                <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(200)}
                       onChange={() => handleMovingAverageSelect(200)}
                     />
                     MA200
                   </label>
+                </div>
                 </Dropdown.Item>
                 <Dropdown.Item>
+                <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(225)}
                       onChange={() => handleMovingAverageSelect(225)}
                     />
                     MA225
                   </label>
+                </div>
                 </Dropdown.Item>
                 <Dropdown.Item>
+                <div className='form-check'>
                   <label>
                     <input
                       type="checkbox"
+                      className='form-check-input'
                       checked={selectedMovingAverages.includes(720)}
                       onChange={() => handleMovingAverageSelect(720)}
                     />
                     MA720
                   </label>
+                </div>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
