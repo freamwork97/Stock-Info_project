@@ -45,7 +45,7 @@ function ChartDetailPage() {
 
   return (
     <div className="container mt-4">
-      <h2 className='text-white'>
+      <h2>
         <a href={'/search/' + searchTerm} className="fs-3 me-2">
           <svg xmlns="http://www.w3.org/2000/svg" 
               width="30" 
