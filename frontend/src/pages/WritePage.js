@@ -5,12 +5,24 @@ function WritePost() {
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 여기에서 게시글 작성 로직을 추가합니다.
-    // 작성자, 제목, 내용을 이용하여 데이터를 저장하거나 전송하는 코드를 작성합니다.
+  
+    const response = await fetch('http://localhost:8000/posts/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title, author, content }),
+    });
+  
+    if (response.ok) {
+      alert('게시글이 작성되었습니다.');
+    } else {
+      alert('게시글 작성에 실패했습니다.');
+    }
   };
+  
 
   return (
     <div className="container mt-4">

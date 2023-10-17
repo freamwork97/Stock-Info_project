@@ -121,3 +121,17 @@ def get_company_names(prefix):
             return company_names
     finally:
         conn.close()
+
+# 게시글 작성
+def create_post(title, author, content):
+    conn = get_connection()
+    try:
+        with conn.cursor() as curs:
+            sql = """
+                INSERT INTO posts (title, author, content)
+                VALUES (%s, %s, %s)
+            """
+            curs.execute(sql, (title, author, content))
+            conn.commit()
+    finally:
+        conn.close()

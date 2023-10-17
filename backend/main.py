@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
-from db_utils import get_stock_info,get_company_names
+from db_utils import get_stock_info,get_company_names,create_post
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
@@ -41,6 +41,10 @@ class ExchangeRateItem(BaseModel):
     currency: str            # 통화(달러, 엔화 등등)
     exchange_rate: str       # 환율
 
+class PostCreate(BaseModel):
+    title: str   # 제목
+    author: str  # 작성자
+    content: str # 내용
 
 # 주식정보
 @app.get("/stock/{stock_name}", response_model=StockInfo)
@@ -88,3 +92,6 @@ def read_key_index():
     data = get_key_index()
     return data
 
+@app.post("/posts/")
+def create_post_handler(post: PostCreate):
+    return create_post(post.title, post.author, post.content)
