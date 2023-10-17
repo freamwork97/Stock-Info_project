@@ -1,24 +1,31 @@
-// WriteReportPage.js
 import React, { useState } from 'react';
 
-function WritePage() {
-  const [author, setAuthor] = useState(''); // 작성자 상태
-  const [password, setPassword] = useState(''); // 비밀번호 상태
-  const [content, setContent] = useState(''); // 내용 상태
+function WritePost() {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [content, setContent] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 여기에 글쓰기 로직을 추가하면 됩니다.
-    // 작성자, 비밀번호, 내용을 이용하여 데이터를 저장하거나 전송하는 코드를 작성합니다.
-
-    console.log(author, password, content);
+    // 여기에서 게시글 작성 로직을 추가합니다.
+    // 작성자, 제목, 내용을 이용하여 데이터를 저장하거나 전송하는 코드를 작성합니다.
   };
 
   return (
     <div className="container mt-4">
-      <h2>투자 리포트 작성</h2>
+      <h2>글쓰기</h2>
       <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="title" className="form-label">제목</label>
+          <input
+            type="text"
+            className="form-control"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
         <div className="mb-3">
           <label htmlFor="author" className="form-label">작성자</label>
           <input
@@ -27,16 +34,6 @@ function WritePage() {
             id="author"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">비밀번호</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -55,4 +52,4 @@ function WritePage() {
   );
 }
 
-export default WritePage;
+export default WritePost;
