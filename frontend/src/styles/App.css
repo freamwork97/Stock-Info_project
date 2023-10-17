@@ -21,3 +21,9 @@ a {text-decoration-line: none;}
     font-size: 25px;
   }
   
+  .text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  

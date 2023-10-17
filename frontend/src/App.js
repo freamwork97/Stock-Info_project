@@ -5,7 +5,8 @@ import SearchResultPage from './pages/SearchResultPage';
 import ChartDetailPage from './pages/ChartDetailPage';
 import BarChart from './test/Etest';
 import CandlestickChart from './test/EChartCandleTEST';
-import InvestmentReportPage from './pages/InvestmentReportPage';
+import PostListPage from './pages/PostListPage';
+import WritePage from './pages/WritePage';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <a className="nav-link" href="/Report">투자리포트</a>
+              <a className="nav-link" href="/Post">게시판</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/test">테스트</a>
@@ -37,7 +38,8 @@ function App() {
           <Route path="/" element={<MainPage />} /> {/*메인페이지*/}
           <Route path="/search/:searchTerm" element={<SearchResultPage />} /> {/*검색결과*/}
           <Route path="/chart/:searchTerm" element={<ChartDetailPage />} /> {/*차트상세*/}
-          <Route path='/Report' element={<InvestmentReportPage/>}/> {/*투자리포트*/}
+          <Route path='/Post' element={<PostListPage/>}/> {/*게시판*/}
+          <Route path="/write" element={<WritePage/>} /> {/* 글쓰기 */}
           <Route path="/test.bar" element={<BarChart />} /> {/*EchartTest*/}
           <Route path="/test.candle" element={<CandlestickChart />} /> {/*EchartTest*/}
         </Routes>
