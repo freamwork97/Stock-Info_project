@@ -6,6 +6,7 @@ a {text-decoration-line: none;}
   
   .navbar-brand {
     font-size: 24px;
+    margin-left: 20px;
   }
   
   .navbar-nav {
