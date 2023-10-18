@@ -26,6 +26,9 @@ function App() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
+              <a className="nav-link" href="/test">테스트</a>
+            </li>
+            <li className="nav-item">
               <a className="nav-link" href="/post">게시판</a>
             </li>
             <li className="nav-item">
