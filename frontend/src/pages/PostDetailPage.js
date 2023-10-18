@@ -31,19 +31,20 @@ function PostDetailPage() {
       </div>
       <h2 className="text-start mt-5 fs-1 fw-bold text-danger-emphasis">{post.title}</h2>
       <p className="text-start mt-5 fs-3">{post.content}</p>
-      <div className='text-start mt-4 card'>
-        <div className='p-3'>
-          여기는 댓글 입력칸 준비중
-        </div>
-      </div>
+      <hr></hr>
       <div className='text-start p-1'>
         <p className='fs-6'>
-          댓글작성자 | 댓글작성일
+          작성자 | 작성일
         </p>
         <p className='fs-3'>
             댓글내용
         </p>
       </div><hr></hr>
+      <div className='text-start mt-4 card'>
+        <div className='p-3'>
+          여기는 댓글 입력칸 준비중
+        </div>
+      </div>
     </div>
   );
 }
