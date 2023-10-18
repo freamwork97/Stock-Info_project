@@ -37,7 +37,12 @@ function PostDetailPage() {
         </div>
       </div>
       <div className='text-start p-1'>
-        작성자 | 작성일자 아래에 댓글내용 
+        <p className='fs-6'>
+          작성자 | 작성일
+        </p>
+        <p className='fs-3'>
+            댓글내용
+        </p>
       </div><hr></hr>
     </div>
   );
