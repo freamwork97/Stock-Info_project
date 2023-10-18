@@ -42,10 +42,10 @@ class ExchangeRateItem(BaseModel):
     exchange_rate: str       # 환율
 
 class PostCreate(BaseModel):
-    title: str   # 제목
-    author: str  # 작성자
-    content: str # 내용
-
+    title: str    # 제목
+    author: str   # 작성자
+    content: str  # 내용
+    password: str # 비밀번호
 # 주식정보
 @app.get("/stock/{stock_name}", response_model=StockInfo)
 def read_stock_info(stock_name: str):
@@ -95,7 +95,7 @@ def read_key_index():
 # 게시글 작성
 @app.post("/post/save")
 def create_post_handler(post: PostCreate):
-    return create_post(post.title, post.author, post.content)
+    return create_post(post.title, post.author, post.content, post.password)
 
 # 게시글 목록
 @app.get("/post")
@@ -110,7 +110,8 @@ def get_post_list():
             'title': post[1],
             'author': post[2],
             'content': post[3],
-            'created_at': post[4].isoformat()  # 날짜 형태를 ISO 포맷으로 변환
+            'password': post[4],
+            'created_at': post[5].isoformat()  # 날짜 형태를 ISO 포맷으로 변환
         }
         post_list.append(post_dict)
 
@@ -129,7 +130,8 @@ def get_post_one_data(id: str):
             'title': post[1],
             'author': post[2],
             'content': post[3],
-            'created_at': post[4].isoformat()  # 날짜 형태를 ISO 포맷으로 변환
+            'password': post[4],
+            'created_at': post[5].isoformat()  # 날짜 형태를 ISO 포맷으로 변환
         }
         post_list.append(post_dict)
 

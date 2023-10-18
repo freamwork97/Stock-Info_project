@@ -5,6 +5,7 @@ function WritePost() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
+  const [password, setPassword] = useState(''); 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,7 +16,7 @@ function WritePost() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title, author, content }),
+      body: JSON.stringify({ title, author, content, password }), 
     });
   
     if (response.ok) {
@@ -25,7 +26,6 @@ function WritePost() {
       alert('게시글 작성에 실패했습니다.');
     }
   };
-  
 
   return (
     <div className="container mt-4">
@@ -49,6 +49,16 @@ function WritePost() {
             id="author"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">비밀번호</label>
+          <input
+            type="password" // 입력 내용을 숨기기 위해
+            className="form-control"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="mb-3">
