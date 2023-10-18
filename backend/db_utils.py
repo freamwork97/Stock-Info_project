@@ -166,3 +166,54 @@ def get_post_one(id):
             return result
     finally:
         conn.close()
+
+# 게시글 수정
+def update_post(id, title, author, content, password):
+    conn = get_connection()
+    try:
+        with conn.cursor() as curs:
+            # 비밀번호 확인
+            sql_check_password = """
+                SELECT id FROM posts WHERE id=%s AND password=%s
+            """
+            curs.execute(sql_check_password, (id, password))
+            result = curs.fetchone()
+            
+            if not result:
+                raise HTTPException(status_code=401, detail="비밀번호가 올바르지 않습니다.")
+            
+            # 비밀번호가 일치하면 게시글 수정
+            sql_update_post = """
+                UPDATE posts 
+                SET title=%s, author=%s, content=%s 
+                WHERE id=%s
+            """
+            curs.execute(sql_update_post, (title, author, content, id))
+            conn.commit()
+    finally:
+        conn.close()
+
+# 게시글 삭제
+def delete_post(id, password):
+    conn = get_connection()
+    try:
+        with conn.cursor() as curs:
+            # 비밀번호 확인
+            sql_check_password = """
+                SELECT id FROM posts WHERE id=%s AND password=%s
+            """
+            curs.execute(sql_check_password, (id, password))
+            result = curs.fetchone()
+            
+            if not result:
+                raise HTTPException(status_code=401, detail="비밀번호가 올바르지 않습니다.")
+            
+            # 비밀번호가 일치하면 게시글 삭제
+            sql_delete_post = """
+                DELETE FROM posts 
+                WHERE id=%s
+            """
+            curs.execute(sql_delete_post, (id,))
+            conn.commit()
+    finally:
+        conn.close()

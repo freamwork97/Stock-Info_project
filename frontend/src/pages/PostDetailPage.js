@@ -11,6 +11,7 @@ function PostDetailPage() {
         const response = await fetch(`http://localhost:8000/post/${id}`);
         const data = await response.json();
         setPost(data[0]); // 첫 번째 요소를 가져옴
+        console.log(data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

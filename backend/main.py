@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
-from db_utils import get_stock_info,get_company_names,create_post,get_post,get_post_one
+from db_utils import get_stock_info,get_company_names,create_post,get_post,get_post_one,update_post,delete_post
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
@@ -136,4 +136,15 @@ def get_post_one_data(id: str):
         post_list.append(post_dict)
 
     return post_list
+
+@app.put("/posts/{post_id}")
+def update_post_handler(post_id: int, title: str, author: str, content: str, password: str):
+    update_post(post_id, title, author, content, password)
+    return {"message": "게시글이 수정되었습니다."}
+
+@app.delete("/posts/{post_id}")
+def delete_post_handler(post_id: int, password: str):
+    delete_post(post_id, password)
+    return {"message": "게시글이 삭제되었습니다."}
+
 
