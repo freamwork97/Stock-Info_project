@@ -29,7 +29,7 @@ function App() {
               <a className="nav-link" href="/post">게시판</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/test">테스트</a>
+              <a className="nav-link" href="/write">글작성</a>
             </li>
           </ul>
         </div>

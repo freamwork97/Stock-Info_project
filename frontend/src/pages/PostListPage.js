@@ -56,10 +56,8 @@ function PostListPage() {
         totalPages={Math.ceil(post.length / postsPerPage)}
         onPageChange={handlePageChange}
       />
-      <Link to="/write" className="btn btn-primary mb-3">글쓰기</Link>
     </div>
   );
-
 }
 
 export default PostListPage;
