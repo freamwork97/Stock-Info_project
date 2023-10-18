@@ -150,3 +150,19 @@ def get_post():
             return result
     finally:
         conn.close()
+
+# 선택 게시글 
+def get_post_one(id):
+    conn = get_connection()
+    try:
+        with conn.cursor() as curs:
+            sql = """
+               select * 
+               from posts 
+               where id = %s
+            """
+            curs.execute(sql,id)
+            result = curs.fetchall()  # 가져온 데이터를 변수에 저장
+            return result
+    finally:
+        conn.close()

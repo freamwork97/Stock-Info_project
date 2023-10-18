@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
-from db_utils import get_stock_info,get_company_names,create_post,get_post
+from db_utils import get_stock_info,get_company_names,create_post,get_post,get_post_one
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
@@ -116,4 +116,22 @@ def get_post_list():
 
     return post_list
 
+# 상세 게시글
+@app.get("/post/{id}")
+def get_post_one_data(id: str):
+    posts = get_post_one(id)
+
+    # 데이터를 딕셔너리 형태로 변경
+    post_list = []
+    for post in posts:
+        post_dict = {
+            'id': post[0],
+            'title': post[1],
+            'author': post[2],
+            'content': post[3],
+            'created_at': post[4].isoformat()  # 날짜 형태를 ISO 포맷으로 변환
+        }
+        post_list.append(post_dict)
+
+    return post_list
 
