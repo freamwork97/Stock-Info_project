@@ -6,15 +6,16 @@ const postsPerPage = 4; // 페이지 당 게시물 수
 
 function PostListItem({ post }) {
   return (
-    <div className="card mb-3">
-      <div className="card-body">
-        <h5 className="card-title">
-          <Link to={`/post/${post.id}`}>{post.title}</Link>
+    <div className="mb-3">
+      <div className="">
+        <h5 className="">
+          <Link className='text-black' to={`/post/${post.id}`}>{post.title}</Link>
         </h5>
         <p className="card-text">
           작성자: {post.author} | 작성일: {post.created_at}
         </p>
       </div>
+      <hr></hr>
     </div>
   );
 }

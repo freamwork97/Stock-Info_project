@@ -1,4 +1,7 @@
-a {text-decoration-line: none;}
+a {
+  text-decoration-line: none;
+  color: black;
+}
 
 .navbar {
     padding: 10px 0;

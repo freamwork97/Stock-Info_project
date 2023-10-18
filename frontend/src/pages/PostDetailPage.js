@@ -20,15 +20,17 @@ function PostDetailPage() {
   }, [id]); // id가 변경될 때마다 다시 불러옴
 
   if (!post) {
-    return <div>게시물을 찾을 수 없습니다.</div>;
+    return <div className="container mt-4 text-center">게시물을 찾을 수 없습니다.</div>;
   }
 
   return (
-    <div className="container mt-4">
-      <h2>{post.title}</h2>
-      <p>작성자: {post.author}</p>
-      <p>작성일: {post.created_at}</p>
-      <p>{post.content}</p>
+    <div className="container mt-4 text-center">
+      <div className="fs-5 d-flex justify-content-between">
+        <p>작성자: {post.author}</p>
+        <p>작성일: {post.created_at}</p>
+      </div>
+      <h2 className="text-start mt-5 fs-1 fw-bold text-danger-emphasis">{post.title}</h2>
+      <p className="text-start mt-5 fs-3">{post.content}</p>
     </div>
   );
 }
