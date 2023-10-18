@@ -8,6 +8,7 @@ import CandlestickChart from './test/EChartCandleTEST';
 import PostListPage from './pages/PostListPage';
 import WritePage from './pages/WritePage';
 import PostDetailPage from './pages/PostDetailPage';
+import UpdatePostPage from './pages/UpdatePostPage';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path='/post' element={<PostListPage/>}/> {/*게시판*/}
           <Route path="/write" element={<WritePage/>} /> {/* 글쓰기 */}
           <Route path="/post/:id" element={<PostDetailPage/>} /> {/*게시글상세내용*/}
+          <Route path="/update/:id" element={<UpdatePostPage/>} /> {/*게시글수정*/}
           <Route path="/test.bar" element={<BarChart />} /> {/*EchartTest*/}
           <Route path="/test.candle" element={<CandlestickChart />} /> {/*EchartTest*/}
         </Routes>

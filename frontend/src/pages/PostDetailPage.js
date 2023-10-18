@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function PostDetailPage() {
   let { id } = useParams();
   const [post, setPost] = useState(null);
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // useNavigate 추가
+  const navigate = useNavigate(); 
   const [errorMessage, setErrorMessage] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,23 +23,31 @@ function PostDetailPage() {
   }, [id]);
 
   const handleDelete = async () => {
-    try {
-      const response = await fetch(`http://localhost:8000/posts/${id}?password=${password}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        // 삭제 성공 시 /post 페이지로 이동
-        navigate('/post');
-      } else {
-        // 삭제 실패 시 에러 메시지 표시
-        setErrorMessage(data.detail);
+    const validPassword = prompt("비밀번호를 입력하세요:");
+    if (validPassword === post.password) {
+      try {
+        const response = await fetch(`http://localhost:8000/posts/${id}?password=${validPassword}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          navigate('/post');
+        } else {
+          setErrorMessage(data.detail);
+        }
+      } catch (error) {
+        console.error("게시물 삭제 중 오류 발생:", error);
       }
-    } catch (error) {
-      console.error("게시물 삭제 중 오류 발생:", error);
+    }
+  };
+
+  const handleEdit = () => {
+    const validPassword = prompt("비밀번호를 입력하세요:");
+    if (validPassword === post.password) {
+      navigate(`/update/${id}`);
     }
   };
 
@@ -56,6 +63,11 @@ function PostDetailPage() {
       </div>
       <h2 className="text-start mt-5 fs-1 fw-bold text-danger-emphasis">{post.title}</h2>
       <p className="text-start mt-5 fs-3">{post.content}</p>
+        <div className='text-start'>
+          <button onClick={handleDelete}>게시물 삭제</button>
+          <button onClick={handleEdit}>게시물 수정</button>
+          {errorMessage && <div className="text-danger">{errorMessage}</div>}
+      </div>
       <hr />
       <div className='text-start p-1'>
         <p className='fs-6'>
@@ -66,17 +78,7 @@ function PostDetailPage() {
         </p>
       </div>
       <hr />
-      <div className='text-start mt-4 card'>
-        <div className='p-3'>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button onClick={handleDelete}>게시물 삭제</button>
-          {errorMessage && <div className="text-danger">{errorMessage}</div>}
-        </div>
-      </div>
+
     </div>
   );
 }
