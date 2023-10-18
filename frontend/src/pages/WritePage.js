@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function WritePost() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +20,7 @@ function WritePost() {
   
     if (response.ok) {
       alert('게시글이 작성되었습니다.');
+      navigate(`/post`);
     } else {
       alert('게시글 작성에 실패했습니다.');
     }
