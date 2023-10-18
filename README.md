@@ -130,6 +130,7 @@ CREATE TABLE comments (
     post_id INT,
     author VARCHAR(255) NOT NULL,
     content TEXT,
+    password VARCHAR(255) NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id)
 )
