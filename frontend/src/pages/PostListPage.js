@@ -1,46 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../components/Pagination';
 
 const postsPerPage = 4; // 페이지 당 게시물 수
-
-const samplePosts = [
-  {
-    id: 1,
-    title: '첫 번째 게시물',
-    author: '작성자1',
-    content: '첫 번째 게시물의 내용입니다.',
-    created_at: '2023-10-04 10:00:00'
-  },
-  {
-    id: 2,
-    title: '두 번째 게시물',
-    author: '작성자2',
-    content: '두 번째 게시물의 내용입니다.',
-    created_at: '2023-10-04 11:00:00'
-  },
-  {
-    id: 3,
-    title: '세 번째 게시물',
-    author: '작성자3',
-    content: '세 번째 게시물의 내용입니다.',
-    created_at: '2023-10-04 12:00:00'
-  },
-  {
-    id: 4,
-    title: '네 번째 게시물',
-    author: '작성자4',
-    content: '샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플샘플',
-    created_at: '2023-10-04 12:00:00'
-  },
-  {
-    id: 5,
-    title: '세 번째 게시물',
-    author: '작성자3',
-    content: '세 번째 게시물의 내용입니다.',
-    created_at: '2023-10-04 12:00:00'
-  }
-];
 
 function PostListItem({ post }) {
   return (
@@ -58,7 +20,22 @@ function PostListItem({ post }) {
 }
 
 function PostListPage() {
+  const [post, setPost] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/post');
+        const data = await response.json();
+        setPost(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -66,7 +43,7 @@ function PostListPage() {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = samplePosts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <div className="container mt-4">
@@ -76,7 +53,7 @@ function PostListPage() {
       ))}
       <Pagination
         currentPage={currentPage}
-        totalPages={Math.ceil(samplePosts.length / postsPerPage)}
+        totalPages={Math.ceil(post.length / postsPerPage)}
         onPageChange={handlePageChange}
       />
       <Link to="/write" className="btn btn-primary mb-3">글쓰기</Link>

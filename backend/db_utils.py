@@ -2,6 +2,7 @@ import pymysql
 import configparser
 from fastapi import HTTPException
 import pandas as pd
+from pymysql import cursors
 
 config = configparser.ConfigParser()
 config.read('../conf/config.ini')
@@ -146,6 +147,6 @@ def get_post():
             """
             curs.execute(sql)
             result = curs.fetchall()  # 가져온 데이터를 변수에 저장
-            return result  
+            return result
     finally:
         conn.close()

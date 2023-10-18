@@ -100,5 +100,20 @@ def create_post_handler(post: PostCreate):
 # 게시글 목록
 @app.get("/post")
 def get_post_list():
-    return get_post()
+    posts = get_post()
+
+    # 데이터를 딕셔너리 형태로 변경
+    post_list = []
+    for post in posts:
+        post_dict = {
+            'id': post[0],
+            'title': post[1],
+            'author': post[2],
+            'content': post[3],
+            'created_at': post[4].isoformat()  # 날짜 형태를 ISO 포맷으로 변환
+        }
+        post_list.append(post_dict)
+
+    return post_list
+
 
