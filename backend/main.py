@@ -93,7 +93,7 @@ def read_key_index():
     return data
 
 # 게시글 작성
-@app.post("/posts/")
+@app.post("/post/save")
 def create_post_handler(post: PostCreate):
     return create_post(post.title, post.author, post.content)
 
