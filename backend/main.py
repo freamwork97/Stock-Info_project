@@ -116,7 +116,7 @@ def get_post_list():
 
     return post_list
 
-# 상세 게시글
+# 게시글 조회
 @app.get("/post/{id}")
 def get_post_one_data(id: str):
     posts = get_post_one(id)

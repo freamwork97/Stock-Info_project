@@ -151,7 +151,7 @@ def get_post():
     finally:
         conn.close()
 
-# 선택 게시글 
+# 게시글 조회 
 def get_post_one(id):
     conn = get_connection()
     try:
