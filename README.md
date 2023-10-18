@@ -113,6 +113,27 @@ CREATE TABLE IF NOT EXISTS financial_statements (
     brefrmtrm_amount VARCHAR(255),
     currency VARCHAR(255))
 ```
+
+```sql
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+```
+
+```sql
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT,
+    author VARCHAR(255) NOT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+)
+```
 ## 메인페이지
 - 메인페이지는 심플하게
 - 검색창
