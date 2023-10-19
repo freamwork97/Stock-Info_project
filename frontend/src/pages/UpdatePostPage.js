@@ -5,7 +5,7 @@ function EditPostPage() {
   let { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [content, setContent] = useState(""); // 추가: 수정할 내용 상태
+  const [content, setContent] = useState(""); // 수정할 내용 상태
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
@@ -25,9 +25,6 @@ function EditPostPage() {
 
   const handleEdit = async () => {
     const validPassword = prompt("비밀번호를 입력하세요:");
-    // console.log("비밀번호 | ", validPassword);
-    // console.log("내용 | ",content);
-    // console.log("글번호 | ",id);
         if (validPassword === post.password) {
         try {
             const response = await fetch(`http://localhost:8000/posts/${id}/${content}/${validPassword}`, {
@@ -38,10 +35,6 @@ function EditPostPage() {
                 body: JSON.stringify({ validPassword, content }), // 비밀번호와 수정할 내용 전송
             });
             const data = await response.json();
-            // console.log("비밀번호 | ", validPassword);
-            // console.log("내용 | ",content);
-            // console.log("글번호 | ",id);
-            // console.log(data)
             if (response.ok) {
                 // 수정 성공 시 해당 게시물의 상세 페이지로 이동
                 navigate(`/post/${id}`);
