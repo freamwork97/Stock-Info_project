@@ -78,7 +78,6 @@ function PostDetailPage() {
         </p>
       </div>
       <hr />
-
     </div>
   );
 }

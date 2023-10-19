@@ -2,7 +2,6 @@ import pymysql
 import configparser
 from fastapi import HTTPException
 import pandas as pd
-from pymysql import cursors
 
 config = configparser.ConfigParser()
 config.read('../conf/config.ini')
