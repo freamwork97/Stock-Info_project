@@ -5,7 +5,6 @@ function EditPostPage() {
   let { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [password, setPassword] = useState("");
   const [content, setContent] = useState(""); // 추가: 수정할 내용 상태
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -25,26 +24,38 @@ function EditPostPage() {
   }, [id]);
 
   const handleEdit = async () => {
-    try {
-      const response = await fetch(`http://localhost:8000/posts/${id}`, {
-        method: "PUT", // 수정 요청은 PUT 메서드 사용
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password, content }), // 비밀번호와 수정할 내용 전송
-      });
-      const data = await response.json();
-      if (response.ok) {
-        // 수정 성공 시 해당 게시물의 상세 페이지로 이동
-        navigate(`/post/${id}`);
-      } else {
-        // 수정 실패 시 에러 메시지 표시
-        setErrorMessage(data.detail);
-      }
-    } catch (error) {
-      console.error("게시물 수정 중 오류 발생:", error);
+    const validPassword = prompt("비밀번호를 입력하세요:");
+    // console.log("비밀번호 | ", validPassword);
+    // console.log("내용 | ",content);
+    // console.log("글번호 | ",id);
+        if (validPassword === post.password) {
+        try {
+            const response = await fetch(`http://localhost:8000/posts/${id}/${content}/${validPassword}`, {
+                method: "put", // 수정 요청은 PUT 메서드 사용
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ validPassword, content }), // 비밀번호와 수정할 내용 전송
+            });
+            const data = await response.json();
+            // console.log("비밀번호 | ", validPassword);
+            // console.log("내용 | ",content);
+            // console.log("글번호 | ",id);
+            // console.log(data)
+            if (response.ok) {
+                // 수정 성공 시 해당 게시물의 상세 페이지로 이동
+                navigate(`/post/${id}`);
+            } else {
+                // 수정 실패 시 에러 메시지 표시
+                setErrorMessage(data.detail);
+            }
+        } catch (error) {
+            console.error("게시물 수정 중 오류 발생:", error);
+        }
     }
-  };
+};
+
+  
 
   if (!post) {
     return <div className="container mt-4 text-center">게시물을 찾을 수 없습니다.</div>;
@@ -64,14 +75,10 @@ function EditPostPage() {
         onChange={(e) => setContent(e.target.value)}
       />
       <div className="mt-4">
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
         <button className="btn btn-primary ms-2" onClick={handleEdit}>
           게시물 수정
         </button>
+        {errorMessage && <div className="text-danger">{errorMessage}</div>}
       </div>
     </div>
   );

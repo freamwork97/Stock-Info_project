@@ -168,7 +168,7 @@ def get_post_one(id):
         conn.close()
 
 # 게시글 수정
-def update_post(id, title, author, content, password):
+def update_post(id, content, password):
     conn = get_connection()
     try:
         with conn.cursor() as curs:
@@ -185,10 +185,10 @@ def update_post(id, title, author, content, password):
             # 비밀번호가 일치하면 게시글 수정
             sql_update_post = """
                 UPDATE posts 
-                SET title=%s, author=%s, content=%s 
+                SET content=%s 
                 WHERE id=%s
             """
-            curs.execute(sql_update_post, (title, author, content, id))
+            curs.execute(sql_update_post, (content, id))
             conn.commit()
     finally:
         conn.close()

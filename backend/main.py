@@ -137,9 +137,9 @@ def get_post_one_data(id: str):
 
     return post_list
 
-@app.put("/posts/{post_id}")
-def update_post_handler(post_id: int, title: str, author: str, content: str, password: str):
-    update_post(post_id, title, author, content, password)
+@app.put("/posts/{post_id}/{content}/{password}")
+def update_post_handler(post_id: str, content: str, password: str):
+    update_post(post_id, content, password)
     return {"message": "게시글이 수정되었습니다."}
 
 @app.delete("/posts/{post_id}")
