@@ -137,11 +137,13 @@ def get_post_one_data(id: str):
 
     return post_list
 
+# 게시글 수정
 @app.put("/posts/{post_id}/{content}/{password}")
 def update_post_handler(post_id: str, content: str, password: str):
     update_post(post_id, content, password)
     return {"message": "게시글이 수정되었습니다."}
 
+# 게시글 삭제
 @app.delete("/posts/{post_id}")
 def delete_post_handler(post_id: int, password: str):
     delete_post(post_id, password)
