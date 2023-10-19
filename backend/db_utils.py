@@ -144,6 +144,7 @@ def get_post():
         with conn.cursor() as curs:
             sql = """
                select * from posts 
+               order by id desc;
             """
             curs.execute(sql)
             result = curs.fetchall()  # 가져온 데이터를 변수에 저장
