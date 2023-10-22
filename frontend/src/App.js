@@ -3,41 +3,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import SearchResultPage from './pages/SearchResultPage';
 import ChartDetailPage from './pages/ChartDetailPage';
-import BarChart from './test/Etest';
-import CandlestickChart from './test/EChartCandleTEST';
 import PostListPage from './pages/PostListPage';
 import WritePage from './pages/WritePage';
 import PostDetailPage from './pages/PostDetailPage';
 import UpdatePostPage from './pages/UpdatePostPage';
+import Navi from './components/Navi';
 
 function App() {
   return (
     <div className="container mt-4">
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a className="navbar-brand" href="/">메인</a>
-        <button className="navbar-toggler" 
-                type="button" 
-                data-toggle="collapse" 
-                data-target="#navbarNav" 
-                aria-controls="navbarNav" 
-                aria-expanded="false" 
-                aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <a className="nav-link" href="/test">테스트</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/post">게시판</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/write">글작성</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <Navi/>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />} /> {/*메인페이지*/}
@@ -47,8 +22,6 @@ function App() {
           <Route path="/write" element={<WritePage/>} /> {/* 글쓰기 */}
           <Route path="/post/:id" element={<PostDetailPage/>} /> {/*게시글상세내용*/}
           <Route path="/update/:id" element={<UpdatePostPage/>} /> {/*게시글수정*/}
-          <Route path="/test.bar" element={<BarChart />} /> {/*EchartTest*/}
-          <Route path="/test.candle" element={<CandlestickChart />} /> {/*EchartTest*/}
         </Routes>
       </Router>
     </div>
