@@ -6,7 +6,7 @@ function InputButton({ IB,toPage }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestedCompanies, setSuggestedCompanies] = useState([]);
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(toPage); // 변수 이름을 변경했습니다.
+  const [currentPage, setCurrentPage] = useState(toPage); 
 
   useEffect(() => {
       // API 호출을 통해 종목명 가져오기
@@ -23,7 +23,6 @@ function InputButton({ IB,toPage }) {
   useEffect(() => {
     setCurrentPage(toPage);
   }, [toPage]);
-
 
   const handleSearch = () => {
 
