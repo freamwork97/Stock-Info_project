@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function InputButton({ IB }) {
+function InputButton({ IB,toPage }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestedCompanies, setSuggestedCompanies] = useState([]);
   const navigate = useNavigate();
@@ -21,13 +21,18 @@ function InputButton({ IB }) {
 
   const handleSearch = () => {
       navigate(`/search/${searchTerm}`);
+
+      if (toPage === '/') {
+        navigate(`/search/${searchTerm}`);
+    } else if (toPage === 'test') {
+      navigate(`/test/${searchTerm}`);
+    }
   };
 
   const handleSuggestionClick = (company) => {
       setSearchTerm(company);
       setSuggestedCompanies([]);
   };
-
 
   return (
     <form>

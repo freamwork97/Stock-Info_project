@@ -44,7 +44,7 @@ function MainPage() {
   return (
     <div className="container p-5">
       <div className='w-25 mx-auto'>
-        <InputButton IB={InputButton}/>
+        <InputButton IB={InputButton} toPage={'/'}/>
       </div>
       <div className="row mb-4">
         <div className="col-md-6">
