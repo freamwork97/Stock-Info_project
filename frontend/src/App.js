@@ -8,7 +8,8 @@ import WritePage from './pages/WritePage';
 import PostDetailPage from './pages/PostDetailPage';
 import UpdatePostPage from './pages/UpdatePostPage';
 import Navi from './components/Navi';
-import PredictPre from './pages/PredictPre';
+import PredictPrePage from './pages/PredictPrePage';
+import PredictNextPage from './pages/PredictNextPage';
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
           <Route path="/write" element={<WritePage/>} /> {/* 글쓰기 */}
           <Route path="/post/:id" element={<PostDetailPage/>} /> {/*게시글상세내용*/}
           <Route path="/update/:id" element={<UpdatePostPage/>} /> {/*게시글수정*/}
-          <Route path="/test" element={<PredictPre/>}/> {/*예측검색페이지*/}
+          <Route path="/test" element={<PredictPrePage/>}/> {/*예측검색페이지*/}
+          <Route path="/test/:searchTerm" element={<PredictNextPage/>}/> {/*예측검색페이지*/}
         </Routes>
       </Router>
     </div>

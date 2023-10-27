@@ -1,7 +1,7 @@
 import React from 'react';
 import InputButton from '../components/InputButton';
 
-function PredictPre() {
+function PredictPrePage() {
 
   return (
     <div className="container p-5">
@@ -11,4 +11,4 @@ function PredictPre() {
     </div>
   );
 }
-export default PredictPre;
+export default PredictPrePage;
