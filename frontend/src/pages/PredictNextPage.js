@@ -36,6 +36,18 @@ function PredictNextPage() {
           <InputButton IB={InputButton} toPage={'test'}/>
         </div>
       </div>
+      <div className="card mt-4">
+        <div className='d-flex justify-content-between '>
+          <div className="chart-area table-responsive  flex-grow-1">
+              <h2 className="mt-3 mx-3 fs-5">
+                날짜 예측값 예측상한값 예측하한값 들어갈 위치
+              </h2>
+          </div>
+        </div>
+        <div>
+          예측 차트 들어갈 위치
+        </div>
+      </div>
     </div>
   </div>  
   );
