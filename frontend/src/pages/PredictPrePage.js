@@ -9,7 +9,9 @@ function PredictPrePage() {
         <div className="mb-3">
           <InputButton IB={InputButton} toPage={'test'}/>
         </div>
-        <p className='mt-4 m-3'>예측을 원하는 종목명을 검색하세요.</p>
+      </div>
+      <div className='w-75 mx-auto fs-1'>
+      <p className='mt-4 m-3'>예측을 원하는 종목명을 검색하세요.</p>
         <div className="alert alert-warning" role="alert">
           투자는 본인의 선택입니다.<br /> 
           재미삼아 만들어본 페이지입니다.<br />
