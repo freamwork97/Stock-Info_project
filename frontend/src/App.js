@@ -28,7 +28,11 @@ function App() {
           <Route path="/test/:searchTerm" element={<PredictNextPage/>}/> {/*예측검색페이지*/}
         </Routes>
       </Router>
+      <footer class="bg-dark text-white text-center py-2" style={{ fontSize: '1.4rem' }}>
+        <p>&copy; windra</p>
+    </footer>
     </div>
+    
   );
 }
 
