@@ -151,11 +151,16 @@ def delete_post_handler(post_id: int, password: str):
     delete_post(post_id, password)
     return {"message": "게시글이 삭제되었습니다."}
 
-# 예측모델
-@app.get("/test/{stock_name}")
-def get_predict_result(stock_name: str):
-    result = predict_result(stock_name)
-    if result:
-        return JSONResponse(content={"prediction_result": result}, status_code=200)
-    else:
-        return JSONResponse(content={"error": "Prediction failed"}, status_code=500)
+# # 예측모델
+# @app.get("/test/{stock_name}")
+# def get_predict_result(stock_name: str):
+#     result = predict_result(stock_name)
+#     if result:
+#         return JSONResponse(content={"prediction_result": result}, status_code=200)
+#     else:
+#         return JSONResponse(content={"error": "Prediction failed"}, status_code=500)
+    
+@app.get("/predict_stock/{stock_name}")
+def predict_stock(stock_name: str):
+    prediction = predict_result(stock_name)
+    return prediction

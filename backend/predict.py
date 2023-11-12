@@ -1,42 +1,39 @@
 # predict.py
 from prophet import Prophet
-from db_utils import find_stock_code_by_name
 import FinanceDataReader as fdr
+from stock_price import get_stock_price
+from datetime import datetime
+import pandas as pd
 
 def predict_result(stock_name):
-    stock_code = find_stock_code_by_name(stock_name)
-    if not stock_code:
-        return None
+    # 주가 정보 가져오기
+    stock_prices = get_stock_price(stock_name)
     
-    # 종목코드를 사용하여 FinanceDataReader로 주식 데이터 가져오기
-    stock_data = get_stock_data(stock_code)
+    if "error" in stock_prices:
+        return {"error": stock_prices["error"]}
     
-    # 주식 데이터의 컬럼명을 Prophet 모델에 맞게 변경
-    stock_data = stock_data.rename(columns={'Date': 'ds', 'Close': 'y'})
-    
-    # Prophet 모델 초기화 및 훈련
-    model = Prophet()
-    model.fit(stock_data)
-    
-    # 미래 데이터 생성 (예측을 위한 날짜 생성)
-    future = model.make_future_dataframe(periods=365)  # 1년(365일) 동안의 예측
-    
-    # 예측 수행
-    forecast = model.predict(future)
-    
-    # 예측 결과 반환 (마지막 날짜의 예측값)
-    predicted_result = forecast['yhat'].iloc[-1]
-    
-    return predicted_result
+    # Prophet에 사용할 데이터 준비
+    df = {
+        "ds": [datetime.strptime(date, "%Y%m%d") for date in stock_prices["날짜"]],
+        "y": stock_prices["종가"]
+    }
 
-def get_stock_data(stock_code: str):
-    # FinanceDataReader를 사용하여 주식 데이터 가져오기
-    stock_data = fdr.DataReader(stock_code)
+    # Prophet 모델 생성 및 피팅
+    model = Prophet()
+    model.fit(pd.DataFrame(df))
+
+    # 퓨처 데이터프레임 생성
+    future = model.make_future_dataframe(periods=365)  # 예측할 날짜 수를 조절할 수 있습니다
     
-    # 주식 데이터의 컬럼명을 변경
-    stock_data = stock_data.reset_index()
-    
-    # 주식 데이터의 컬럼명을 Prophet 모델에 맞게 변경
-    stock_data = stock_data.rename(columns={'Date': 'ds', 'Close': 'y'})
-    
-    return stock_data[['ds', 'y']]  # 날짜와 종가만 선택
+    # 예측
+    forecast = model.predict(future)
+
+    # 예측 결과 추출
+    result = {
+        "날짜": forecast["ds"].dt.strftime("%Y%m%d").tolist(),
+        "예측종가": forecast["yhat"].tolist(),
+        "예측고가": forecast["yhat_upper"].tolist(),
+        "예측저가": forecast["yhat_lower"].tolist(),
+    }
+
+    return result
