@@ -10,7 +10,6 @@ from corp_code import get_financial_statements_by_name
 from stock_price import get_stock_price
 from key_index import get_key_index
 from predict import predict_result
-from fastapi.responses import JSONResponse
 #######################################################
 app = FastAPI()
 
@@ -150,15 +149,6 @@ def update_post_handler(post_id: str, content: str, password: str):
 def delete_post_handler(post_id: int, password: str):
     delete_post(post_id, password)
     return {"message": "게시글이 삭제되었습니다."}
-
-# # 예측모델
-# @app.get("/test/{stock_name}")
-# def get_predict_result(stock_name: str):
-#     result = predict_result(stock_name)
-#     if result:
-#         return JSONResponse(content={"prediction_result": result}, status_code=200)
-#     else:
-#         return JSONResponse(content={"error": "Prediction failed"}, status_code=500)
     
 @app.get("/predict_stock/{stock_name}")
 def predict_stock(stock_name: str):
