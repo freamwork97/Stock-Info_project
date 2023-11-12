@@ -23,7 +23,7 @@ def predict_result(stock_name):
     model.fit(pd.DataFrame(df))
 
     # 퓨처 데이터프레임 생성
-    future = model.make_future_dataframe(periods=365)  # 예측할 날짜 수를 조절할 수 있습니다
+    future = model.make_future_dataframe(periods=365)  # 예측할 날짜 수
     
     # 예측
     forecast = model.predict(future)
