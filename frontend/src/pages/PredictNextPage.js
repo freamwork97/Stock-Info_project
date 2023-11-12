@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchStockData } from '../components/fetchStockData';
 import InputButton from '../components/InputButton';
-import { Line } from 'react-chartjs-2';
+import { PredictChart } from '../components/drawChart';
 
 function PredictNextPage() {
   const { searchTerm } = useParams();
@@ -13,7 +13,6 @@ function PredictNextPage() {
   useEffect(() => {
     fetchStockData(searchTerm, setCompanyInfo);
 
-    // 예측 결과 가져오기
     fetch(`http://localhost:8000/predict_stock/${searchTerm}`)
       .then((response) => response.json())
       .then((data) => {
@@ -78,13 +77,7 @@ function PredictNextPage() {
             <InputButton IB={InputButton} toPage={'test'} />
           </div>
         </div>
-        <div className="card mt-4">
-          <div className="d-flex justify-content-between ">
-            <div className="chart-area table-responsive  flex-grow-1" style={{ width: '100%', height: '400px' }}>
-              {chartData && <Line data={chartData} options={chartOptions}  />}
-            </div>
-          </div>
-        </div>
+        <PredictChart chartData={chartData} chartOptions={chartOptions} />
       </div>
     </div>
   );

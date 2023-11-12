@@ -1,6 +1,7 @@
 import Chart from 'chart.js/auto';
 import React, { useEffect } from 'react';
 import * as echarts from 'echarts';
+import { Line } from 'react-chartjs-2';
 
 // 간략한 주가 차트
 const drawChart = (stockChart, canvasRef, myChart) => {
@@ -181,5 +182,19 @@ const CandlestickChart = ({ priceData, selectedMovingAverages, movingAverageColo
   return <div id="candlestickChart" style={{ width: '100%', height: '500px' }} />;
 };
 
+// 예측 차트
+const PredictChart = ({ chartData, chartOptions }) => (
+  <div className="card mt-4">
+    <div className="d-flex justify-content-between ">
+      <div className="chart-area table-responsive flex-grow-1" style={{ width: '100%', height: '400px' }}>
+        {chartData && <Line data={chartData} options={chartOptions} />}
+      </div>
+    </div>
+  </div>
+);
 
-export {drawChart,drawChart2,CandlestickChart};
+
+
+
+
+export {drawChart,drawChart2,CandlestickChart,PredictChart};
