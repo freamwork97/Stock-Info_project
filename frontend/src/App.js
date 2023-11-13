@@ -25,7 +25,7 @@ function App() {
           <Route path="/post/:id" element={<PostDetailPage/>} /> {/*게시글상세내용*/}
           <Route path="/update/:id" element={<UpdatePostPage/>} /> {/*게시글수정*/}
           <Route path="/predict" element={<PredictPrePage/>}/> {/*예측검색페이지*/}
-          <Route path="/predict/:searchTerm" element={<PredictNextPage/>}/> {/*예측검색페이지*/}
+          <Route path="/predict/:searchTerm" element={<PredictNextPage/>}/> {/*예측결과페이지*/}
         </Routes>
       </Router>
       <footer className="bg-dark text-white text-center py-2" style={{ fontSize: '1.4rem' }}>
