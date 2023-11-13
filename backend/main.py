@@ -150,6 +150,7 @@ def delete_post_handler(post_id: int, password: str):
     delete_post(post_id, password)
     return {"message": "게시글이 삭제되었습니다."}
     
+# 주가 예측
 @app.get("/predict_stock/{stock_name}")
 def predict_stock(stock_name: str):
     prediction = predict_result(stock_name)

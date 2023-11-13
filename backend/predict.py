@@ -1,4 +1,3 @@
-# predict.py
 from prophet import Prophet
 import FinanceDataReader as fdr
 from stock_price import get_stock_price
