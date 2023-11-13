@@ -355,10 +355,6 @@ CREATE TABLE comments (
     FOREIGN KEY (post_id) REFERENCES posts(id)
 )
 ```
-
-## FastAPI Swagger
-![Alt text](image.png)
-
 ## 메인페이지
 - 메인페이지는 심플하게
 - 검색창
