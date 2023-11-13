@@ -28,8 +28,8 @@ function InputButton({ IB,toPage }) {
 
       if (currentPage === '/') {
         navigate(`/search/${searchTerm}`);
-    } else if (currentPage === 'test') {
-      navigate(`/test/${searchTerm}`);
+    } else if (currentPage === 'predict') {
+      navigate(`/predict/${searchTerm}`);
     } else if (currentPage === 'chart'){
       navigate(`/chart/${searchTerm}`);
     }

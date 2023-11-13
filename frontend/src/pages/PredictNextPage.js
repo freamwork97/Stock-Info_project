@@ -1,4 +1,3 @@
-// PredictNextPage.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchStockData } from '../components/fetchStockData';
@@ -53,7 +52,7 @@ function PredictNextPage() {
       <div className="row align-items-center">
         <div className="col">
           <h2>
-            <a href={'/test'} className="fs-3 me-2">
+            <a href={'/predict'} className="fs-3 me-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="30"
@@ -74,7 +73,7 @@ function PredictNextPage() {
         </div>
         <div className="col-3">
           <div className="w-100">
-            <InputButton IB={InputButton} toPage={'test'} />
+            <InputButton IB={InputButton} toPage={'predict'} />
           </div>
         </div>
         <PredictChart chartData={chartData} chartOptions={chartOptions} />

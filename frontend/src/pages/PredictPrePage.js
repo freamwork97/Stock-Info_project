@@ -7,7 +7,7 @@ function PredictPrePage() {
     <div className="container p-5">
       <div className='w-25 mx-auto'>
         <div className="mb-3">
-          <InputButton IB={InputButton} toPage={'test'}/>
+          <InputButton IB={InputButton} toPage={'predict'}/>
         </div>
       </div>
       <div className='w-75 mx-auto fs-1'>
