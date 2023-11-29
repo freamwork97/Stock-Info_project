@@ -4,42 +4,26 @@ from datetime import datetime, timedelta
 def get_key_index():
     now = datetime.now()
     start_date = (now - timedelta(days=14)).strftime("%Y%m%d")
-    # 코스피
-    kospi = fdr.DataReader('KS11', start_date)
-    # 코스닥
-    kosdaq = fdr.DataReader('KQ11',start_date)
-    # 나스닥
-    nasdaq = fdr.DataReader('IXIC',start_date)
-    # 다우존스
-    dji = fdr.DataReader('DJI',start_date)
-    # S&P500
-    sp = fdr.DataReader('US500',start_date)
-    # 닛케이225
-    jp = fdr.DataReader('N225',start_date)
-
-    # 결측치 제거
-    kospi=kospi.fillna(method = 'ffill') 
-    kosdaq=kosdaq.fillna(method = 'ffill') 
-    nasdaq=nasdaq.fillna(method = 'ffill') 
-    dji=dji.fillna(method = 'ffill') 
-    sp=sp.fillna(method = 'ffill') 
-    jp=jp.fillna(method = 'ffill') 
-
-    # 날짜 형식 변경
-    kospi.index = kospi.index.strftime('%Y-%m-%d')
-    kosdaq.index = kosdaq.index.strftime('%Y-%m-%d')
-    nasdaq.index = nasdaq.index.strftime('%Y-%m-%d')
-    dji.index = dji.index.strftime('%Y-%m-%d')
-    sp.index = sp.index.strftime('%Y-%m-%d')
-    jp.index = jp.index.strftime('%Y-%m-%d')
     
-    result = {
-        '코스피': kospi['Close'].to_dict(),
-        '코스닥': kosdaq['Close'].to_dict(),
-        '나스닥': nasdaq['Close'].to_dict(),
-        '다우존스': dji['Close'].to_dict(),
-        'S&P500': sp['Close'].to_dict(),
-        '닛케이225': jp['Close'].to_dict()
-    }
+    indexes = ['코스피', '코스닥', '나스닥', '다우존스', 'S&P 500', '닛케이225']
+    result = {}
+    
+    for index in indexes:
+        if index == '코스피':
+            data = fdr.DataReader('KS11', start_date)
+        elif index == '코스닥':
+            data = fdr.DataReader('KQ11', start_date)
+        elif index == '나스닥':
+            data = fdr.DataReader('IXIC', start_date)
+        elif index == '다우존스':
+            data = fdr.DataReader('DJI', start_date)
+        elif index == 'S&P 500':
+            data = fdr.DataReader('US500', start_date)
+        elif index == '닛케이225':
+            data = fdr.DataReader('N225', start_date)
 
+        data = data.fillna(method='ffill')
+        data.index = data.index.strftime('%Y-%m-%d')
+        result[index] = data['Close'].to_dict()
+    
     return result
