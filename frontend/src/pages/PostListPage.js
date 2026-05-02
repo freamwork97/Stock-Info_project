@@ -27,7 +27,7 @@ function PostListPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/post');
+        const response = await fetch('/post');
         const data = await response.json();
         setPost(data);
       } catch (error) {

@@ -6,7 +6,7 @@ function FinancialStatements({ searchTerm }) {
   useEffect(() => {
     const fetchFinancialStatements = async () => {
         try {
-          const response = await fetch(`http://localhost:8000/financial_statements/${searchTerm}`);
+          const response = await fetch(`/financial_statements/${searchTerm}`);
           const data = await response.json();
             
           if (Array.isArray(data)) {

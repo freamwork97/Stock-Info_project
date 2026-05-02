@@ -1,7 +1,7 @@
 // 종목명에 따른 주식정보 가져오기(종목명, 주가정보) 데이터베이스에 저장된 정보
 const fetchStockData = async (searchTerm, setCompanyInfo, setStockChart) => {
     try {
-      const response = await fetch(`http://localhost:8000/stock/${searchTerm}`);
+      const response = await fetch(`/stock/${searchTerm}`);
       if (!response.ok) {
         throw new Error('Failed to fetch company info');
       }
@@ -17,7 +17,7 @@ const fetchStockData = async (searchTerm, setCompanyInfo, setStockChart) => {
   
 // 데이터 좀 많이 가져오기
 const fetchLongData = async (searchTerm) => {
-  const response = await fetch(`http://localhost:8000/get_stock_price/${searchTerm}`);
+  const response = await fetch(`/get_stock_price/${searchTerm}`);
   const data = await response.json();
   return {
     날짜: data.날짜,
@@ -32,7 +32,7 @@ const fetchLongData = async (searchTerm) => {
 // 검색어 따른 주가 가져오기
 const fetchStockPrice = async (searchTerm, setStockPrice) => {
   try {
-    const response = await fetch(`http://localhost:8000/get_stock_price/${searchTerm}`);
+    const response = await fetch(`/get_stock_price/${searchTerm}`);
     if (!response.ok) {
       throw new Error('Failed to fetch latest stock prices');
     }

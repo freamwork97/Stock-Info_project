@@ -10,7 +10,7 @@ function PostDetailPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/post/${id}`);
+        const response = await fetch(`/post/${id}`);
         const data = await response.json();
         setPost(data[0]);
         console.log(data);
@@ -26,7 +26,7 @@ function PostDetailPage() {
     const validPassword = prompt("비밀번호를 입력하세요:");
     if (validPassword === post.password) {
       try {
-        const response = await fetch(`http://localhost:8000/posts/${id}?password=${validPassword}`, {
+        const response = await fetch(`/posts/${id}?password=${validPassword}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

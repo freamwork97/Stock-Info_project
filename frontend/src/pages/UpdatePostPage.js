@@ -11,7 +11,7 @@ function EditPostPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/post/${id}`);
+        const response = await fetch(`/post/${id}`);
         const data = await response.json();
         setPost(data[0]);
         console.log(data);
@@ -27,7 +27,7 @@ function EditPostPage() {
     const validPassword = prompt("비밀번호를 입력하세요:");
         if (validPassword === post.password) {
         try {
-            const response = await fetch(`http://localhost:8000/posts/${id}/${content}/${validPassword}`, {
+            const response = await fetch(`/posts/${id}/${content}/${validPassword}`, {
                 method: "put", // 수정 요청은 PUT 메서드 사용
                 headers: {
                 "Content-Type": "application/json",

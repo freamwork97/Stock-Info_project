@@ -11,7 +11,7 @@ function InputButton({ IB,toPage }) {
   useEffect(() => {
       // API 호출을 통해 종목명 가져오기
       if (searchTerm) {
-          fetch(`http://localhost:8000/company_names/?prefix=${searchTerm}`)
+          fetch(`/company_names/?prefix=${searchTerm}`)
               .then(response => response.json())
               .then(data => setSuggestedCompanies(data.slice(0, 5)));
               

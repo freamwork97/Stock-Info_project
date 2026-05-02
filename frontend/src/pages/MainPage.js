@@ -11,13 +11,13 @@ function MainPage() {
 
   useEffect(() => {
     // 환율 정보 가져오기
-    fetch('http://localhost:8000/exchange_rate')
+    fetch('/exchange_rate')
       .then(response => response.json())
       .then(data => setExchangeRates(data))
       .catch(error => console.error('Error:', error));
 
     // 주요 지수 정보 가져오기
-    fetch('http://localhost:8000/key_index')
+    fetch('/key_index')
       .then(response => response.json())
       .then(data => {
         const keyIndexWithLatestClose = {};

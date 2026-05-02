@@ -6,7 +6,7 @@ function News({ searchTerm }) {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/news/${searchTerm}`);
+        const response = await fetch(`/news/${searchTerm}`);
         const data = await response.json();
         setNews(data);
       } catch (error) {

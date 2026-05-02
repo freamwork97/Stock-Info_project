@@ -12,7 +12,7 @@ function PredictNextPage() {
   useEffect(() => {
     fetchStockData(searchTerm, setCompanyInfo);
 
-    fetch(`http://localhost:8000/predict_stock/${searchTerm}`)
+    fetch(`/predict_stock/${searchTerm}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

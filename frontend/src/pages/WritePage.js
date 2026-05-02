@@ -11,7 +11,7 @@ function WritePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const response = await fetch('http://localhost:8000/post/save/', {
+    const response = await fetch('/post/save/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
