@@ -24,24 +24,30 @@ function InputButton({ IB,toPage }) {
     setCurrentPage(toPage);
   }, [toPage]);
 
-  const handleSearch = () => {
-
-      if (currentPage === '/') {
-        navigate(`/search/${searchTerm}`);
+  const navigateTo = (term) => {
+    if (!term) return;
+    if (currentPage === '/') {
+      navigate(`/search/${term}`);
     } else if (currentPage === 'predict') {
-      navigate(`/predict/${searchTerm}`);
-    } else if (currentPage === 'chart'){
-      navigate(`/chart/${searchTerm}`);
+      navigate(`/predict/${term}`);
+    } else if (currentPage === 'chart') {
+      navigate(`/chart/${term}`);
     }
   };
 
+  const handleSearch = (e) => {
+    if (e) e.preventDefault();
+    navigateTo(searchTerm);
+  };
+
   const handleSuggestionClick = (company) => {
-      setSearchTerm(company);
-      setSuggestedCompanies([]);
+    setSearchTerm(company);
+    setSuggestedCompanies([]);
+    navigateTo(company);
   };
 
   return (
-    <form>
+    <form onSubmit={handleSearch}>
         <div className="input-group mb-3">
             <input
                 type="text"
@@ -52,7 +58,6 @@ function InputButton({ IB,toPage }) {
                 />
             <button
                 type='submit'
-                onClick={handleSearch} 
                 className='p-2'>
                 <svg xmlns="http://www.w3.org/2000/svg" 
                         width="18" 
