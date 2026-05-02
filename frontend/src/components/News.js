@@ -8,7 +8,7 @@ function News({ searchTerm }) {
       try {
         const response = await fetch(`/news/${searchTerm}`);
         const data = await response.json();
-        setNews(data);
+        setNews(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching news:', error);
       }

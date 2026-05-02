@@ -55,12 +55,7 @@ def read_stock_info(stock_name: str):
 # 뉴스
 @app.get("/news/{search_query}", response_model=List[NewsItem])
 def read_news(search_query: str):
-    news_info = get_naver_news(search_query)
-
-    if not news_info:
-        raise HTTPException(status_code=404, detail="News not found")
-
-    return news_info
+    return get_naver_news(search_query)
 
 # 환율
 @app.get("/exchange_rate", response_model=List[ExchangeRateItem])
