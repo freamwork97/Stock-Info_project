@@ -12,15 +12,15 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# 컨테이너에서 venv 없이 시스템 Python에 직접 설치
-ENV UV_SYSTEM_PYTHON=1
-
 # 의존성 파일만 먼저 복사 (소스 변경 시 이 레이어는 캐시 재사용)
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-install-project
 
+# uv가 생성한 venv를 PATH에 추가
+ENV PATH="/app/.venv/bin:$PATH"
+
 # CmdStan 설치 (Prophet 예측 모델용 — 빌드에 5~10분 소요)
-RUN python -m cmdstanpy.install_cmdstan --progress
+RUN python -c "import cmdstanpy; cmdstanpy.install_cmdstan()"
 
 # 백엔드 소스 복사
 COPY backend/ .

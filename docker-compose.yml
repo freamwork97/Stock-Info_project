@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: invest
+      MYSQL_USER: invest
+      MYSQL_PASSWORD: "1234"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "invest", "-p1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: .
@@ -10,7 +27,10 @@ services:
     volumes:
       # conf/config.ini는 DB 비밀번호·API 키를 포함하므로 이미지에 굽지 않고 마운트
       # backend 코드가 '../conf/config.ini'로 읽으므로 /app 기준 ../conf = /conf
-      - ./conf:/conf:ro
+      - ./conf/config.docker.ini:/conf/config.ini:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -22,3 +42,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  mysql_data:
