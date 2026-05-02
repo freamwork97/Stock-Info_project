@@ -28,4 +28,6 @@ dependencies = [
     "selenium==4.11.2",
     "tqdm==4.66.1",
     "typing-extensions==4.8.0",
+    "yfinance>=0.2.40",
+    "setuptools",
 ]
