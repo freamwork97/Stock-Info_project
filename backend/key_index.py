@@ -1,29 +1,29 @@
-import FinanceDataReader as fdr
+import yfinance as yf
 from datetime import datetime, timedelta
 
-def get_key_index():
-    now = datetime.now()
-    start_date = (now - timedelta(days=14)).strftime("%Y%m%d")
-    
-    indexes = ['코스피', '코스닥', '나스닥', '다우존스', 'S&P 500', '닛케이225']
-    result = {}
-    
-    for index in indexes:
-        if index == '코스피':
-            data = fdr.DataReader('KS11', start_date)
-        elif index == '코스닥':
-            data = fdr.DataReader('KQ11', start_date)
-        elif index == '나스닥':
-            data = fdr.DataReader('IXIC', start_date)
-        elif index == '다우존스':
-            data = fdr.DataReader('DJI', start_date)
-        elif index == 'S&P 500':
-            data = fdr.DataReader('US500', start_date)
-        elif index == '닛케이225':
-            data = fdr.DataReader('N225', start_date)
+INDEX_TICKERS = {
+    '코스피':    '^KS11',
+    '코스닥':    '^KQ11',
+    '나스닥':    '^IXIC',
+    '다우존스':  '^DJI',
+    'S&P 500':  '^GSPC',
+    '닛케이225': '^N225',
+}
 
-        data = data.fillna(method='ffill')
-        data.index = data.index.strftime('%Y-%m-%d')
-        result[index] = data['Close'].to_dict()
-    
+def get_key_index():
+    start = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+    result = {}
+
+    for name, ticker in INDEX_TICKERS.items():
+        try:
+            data = yf.Ticker(ticker).history(start=start, auto_adjust=True)
+            if data.empty:
+                continue
+            if data.index.tzinfo is not None:
+                data.index = data.index.tz_localize(None)
+            data.index = data.index.strftime('%Y-%m-%d')
+            result[name] = data['Close'].dropna().to_dict()
+        except Exception:
+            continue
+
     return result

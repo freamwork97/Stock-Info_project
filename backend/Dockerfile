@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.11-slim
 
 # uv 바이너리 복사
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
