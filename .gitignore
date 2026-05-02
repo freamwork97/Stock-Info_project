@@ -4,3 +4,4 @@ backend/__pycache__
 financial_statements/
 corpCode/
 test/
+.DS_Store

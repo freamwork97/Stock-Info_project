@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # conf/config.ini는 DB 비밀번호·API 키를 포함하므로 이미지에 굽지 않고 마운트
+      # backend 코드가 '../conf/config.ini'로 읽으므로 /app 기준 ../conf = /conf
+      - ./conf:/conf:ro
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
