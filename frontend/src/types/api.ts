@@ -39,6 +39,7 @@ export interface ExchangeRate {
 export interface NewsItem {
   title: string;
   link: string;
+  thumbnail?: string | null;
 }
 
 export interface FinancialData {

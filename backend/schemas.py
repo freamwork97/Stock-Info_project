@@ -40,6 +40,7 @@ class PredictResponse(BaseModel):
 class NewsItem(BaseModel):
     title: str
     link: str
+    thumbnail: Optional[str] = None
 
 
 # ── 환율 ──────────────────────────────────────────
