@@ -6,6 +6,9 @@ import {
 import 'chartjs-adapter-date-fns';
 import { CandlestickController, CandlestickElement } from 'chartjs-chart-financial';
 import { getCSSVar } from '../utils/format';
+import type {
+  SparklineProps, LineChartViewProps, CandleChartViewProps, PredictChartViewProps,
+} from '../types/components';
 
 Chart.register(
   LineController, LineElement, PointElement, LinearScale, CategoryScale, TimeScale,
@@ -14,9 +17,9 @@ Chart.register(
 );
 
 // ===== Sparkline =====
-export function Sparkline({ data, height = 36, color, fill = true }) {
-  const ref = useRef(null);
-  const chart = useRef(null);
+export function Sparkline({ data, height = 36, color, fill = true }: SparklineProps): JSX.Element {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const chart = useRef<Chart | null>(null);
 
   useEffect(() => {
     if (!ref.current || !data?.length) return;
@@ -46,9 +49,9 @@ export function Sparkline({ data, height = 36, color, fill = true }) {
 }
 
 // ===== LineChart =====
-export function LineChartView({ labels, data, height = 280, color }) {
-  const ref = useRef(null);
-  const chart = useRef(null);
+export function LineChartView({ labels, data, height = 280, color }: LineChartViewProps): JSX.Element {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const chart = useRef<Chart | null>(null);
 
   useEffect(() => {
     if (!ref.current || !data?.length) return;
@@ -60,7 +63,7 @@ export function LineChartView({ labels, data, height = 280, color }) {
     chart.current = new Chart(ref.current, {
       type: 'line',
       data: {
-        labels: labels || data.map((_, i) => i),
+        labels: labels || data.map((_, i) => String(i)),
         datasets: [{
           data, borderColor: c, borderWidth: 2,
           backgroundColor: c + '22', fill: true, pointRadius: 0, tension: 0.2,
@@ -81,9 +84,9 @@ export function LineChartView({ labels, data, height = 280, color }) {
 }
 
 // ===== Candlestick =====
-export function CandleChartView({ candles, height = 460, movingAverages = [] }) {
-  const ref = useRef(null);
-  const chart = useRef(null);
+export function CandleChartView({ candles, height = 460, movingAverages = [] }: CandleChartViewProps): JSX.Element {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const chart = useRef<Chart | null>(null);
 
   useEffect(() => {
     if (!ref.current || !candles?.length) return;
@@ -96,8 +99,9 @@ export function CandleChartView({ candles, height = 460, movingAverages = [] }) 
       x: new Date(c.date).valueOf(),
       o: +c.open, h: +c.high, l: +c.low, c: +c.close,
     }));
-    const sma = (period) => {
-      const out = [], close = candles.map(c => +c.close);
+    const sma = (period: number) => {
+      const out: { x: number; y: number | null }[] = [];
+      const close = candles.map(c => +c.close);
       let sum = 0;
       for (let i = 0; i < close.length; i++) {
         sum += close[i];
@@ -109,7 +113,7 @@ export function CandleChartView({ candles, height = 460, movingAverages = [] }) 
     };
     const colors = ['#22c55e', '#a855f7', '#f59e0b', '#3b82f6', '#ec4899', '#06b6d4'];
     const maDatasets = movingAverages.map((p, i) => ({
-      type: 'line', label: `MA${p}`, data: sma(p),
+      type: 'line' as const, label: `MA${p}`, data: sma(p),
       borderColor: colors[i % colors.length], borderWidth: 1.5,
       pointRadius: 0, fill: false, tension: 0,
     }));
@@ -119,10 +123,13 @@ export function CandleChartView({ candles, height = 460, movingAverages = [] }) 
         datasets: [
           {
             label: '가격', data: candleData,
-            borderColor: { up: upColor, down: downColor, unchanged: text },
-            backgroundColor: { up: upColor, down: downColor, unchanged: text },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            borderColor: { up: upColor, down: downColor, unchanged: text } as any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            backgroundColor: { up: upColor, down: downColor, unchanged: text } as any,
           },
-          ...maDatasets,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ...(maDatasets as any[]),
         ],
       },
       options: {
@@ -133,7 +140,7 @@ export function CandleChartView({ candles, height = 460, movingAverages = [] }) 
                grid: { color: grid }, ticks: { color: text, font: { family: 'JetBrains Mono' } } },
           y: { grid: { color: grid }, ticks: { color: text, font: { family: 'JetBrains Mono' } } },
         },
-      },
+      } as object,
     });
     return () => chart.current?.destroy();
   }, [candles, movingAverages]);
@@ -141,9 +148,9 @@ export function CandleChartView({ candles, height = 460, movingAverages = [] }) 
 }
 
 // ===== Predict (history line + future dashed) =====
-export function PredictChartView({ history, prediction, height = 360 }) {
-  const ref = useRef(null);
-  const chart = useRef(null);
+export function PredictChartView({ history, prediction, height = 360 }: PredictChartViewProps): JSX.Element {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const chart = useRef<Chart | null>(null);
 
   useEffect(() => {
     if (!ref.current || !history?.length) return;
@@ -154,7 +161,9 @@ export function PredictChartView({ history, prediction, height = 360 }) {
     const text = getCSSVar('--text-3');
 
     const histData = history.map(h => ({ x: new Date(h.date).valueOf(), y: +h.close }));
-    let predClose = [], predHigh = [], predLow = [];
+    let predClose: { x: number; y: number }[] = [];
+    let predHigh: { x: number; y: number }[] = [];
+    let predLow: { x: number; y: number }[] = [];
     if (prediction) {
       const lastX = histData[histData.length - 1];
       predClose = [lastX, ...prediction.dates.map((d, i) => ({ x: new Date(d).valueOf(), y: +prediction.close[i] }))];
@@ -170,18 +179,19 @@ export function PredictChartView({ history, prediction, height = 360 }) {
           ...(prediction ? [
             { label: '예측 상한', data: predHigh, borderColor: 'transparent', backgroundColor: brand + '22', fill: '+1', pointRadius: 0 },
             { label: '예측 하한', data: predLow, borderColor: 'transparent', backgroundColor: 'transparent', fill: false, pointRadius: 0 },
-            { label: '예측 종가', data: predClose, borderColor: brand, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, fill: false, tension: 0.2 },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            { label: '예측 종가', data: predClose, borderColor: brand, borderWidth: 2, borderDash: [6, 4] as any, pointRadius: 0, fill: false, tension: 0.2 },
           ] : []),
         ],
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: text, font: { size: 11 }, filter: l => !['예측 상한', '예측 하한'].includes(l.text) } } },
+        plugins: { legend: { labels: { color: text, font: { size: 11 }, filter: (l: { text: string }) => !['예측 상한', '예측 하한'].includes(l.text) } } },
         scales: {
           x: { type: 'time', time: { unit: 'month' }, grid: { color: grid }, ticks: { color: text, font: { family: 'JetBrains Mono' } } },
           y: { grid: { color: grid }, ticks: { color: text, font: { family: 'JetBrains Mono' } } },
         },
-      },
+      } as object,
     });
     return () => chart.current?.destroy();
   }, [history, prediction]);
