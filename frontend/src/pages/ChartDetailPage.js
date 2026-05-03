@@ -1,197 +1,150 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchStockData, fetchLongData } from '../components/fetchStockData';
-import { CandlestickChart } from '../components/drawChart';
-import Dropdown from 'react-bootstrap/Dropdown';
-import InputButton from '../components/InputButton';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { CandleChartView } from '../components/Charts';
+import { BackLink, MiniStat, DeltaPill } from '../components/Bits';
+import SearchInput from '../components/SearchInput';
+import { fmt, delta } from '../utils/format';
 
 function ChartDetailPage() {
   const { searchTerm } = useParams();
-  const [priceData, setPriceData] = useState(null);
-  const [companyInfo, setCompanyInfo] = useState({});
-  const [showDropdown, setShowDropdown] = useState(false); // 드롭다운 열림 상태
-  const [selectedMovingAverages, setSelectedMovingAverages] = useState([]); // 이평선 선택
-  const [movingAverageColors] = useState({ // 이평선 색상
-    5: 'green',
-    20: 'purple',
-    60: 'orange',
-    120: 'blue',
-    200: 'pink',
-    225: 'brown',
-    720: 'cyan',
-  });
-
-  // 이평선 선택 해제
-  const handleMovingAverageSelect = (period) => {
-    setSelectedMovingAverages((prevSelected) =>
-      prevSelected.includes(period)
-        ? prevSelected.filter((p) => p !== period)
-        : [...prevSelected, period]
-    );
-  };
-
-  const handleDropdownToggle = () => {
-    setShowDropdown(!showDropdown);
-  };
+  const [info, setInfo] = useState(null);
+  const [period, setPeriod] = useState('일봉');
+  const [days, setDays] = useState(120);
+  const [movingAverages, setMovingAverages] = useState([5, 20, 60]);
 
   useEffect(() => {
-    fetchLongData(searchTerm).then((data) => {
-      setPriceData(data);
-    });
+    fetch(`/stock/${encodeURIComponent(searchTerm)}`)
+      .then(r => r.json()).then(setInfo).catch(() => setInfo(null));
   }, [searchTerm]);
 
-  useEffect(() => {
-    fetchStockData(searchTerm, setCompanyInfo);
-  }, [searchTerm]);
+  // daily_prices in info has date,open,high,low,close,volume
+  const allCandles = useMemo(() => {
+    return (info?.daily_prices || []).map(d => ({
+      date: d.date, open: +d.open, high: +d.high,
+      low: +d.low, close: +d.close, volume: +d.volume,
+    })).filter(c => !isNaN(c.close));
+  }, [info]);
+
+  const candles = useMemo(() => {
+    const slice = allCandles.slice(-days);
+    if (period === '주봉') return aggregate(slice, 'week');
+    if (period === '월봉') return aggregate(slice, 'month');
+    return slice;
+  }, [allCandles, days, period]);
+
+  const last = candles[candles.length - 1] || {};
+  const prev = candles[candles.length - 2] || {};
+  const { isUp } = delta(last.close, prev.close);
+
+  const periodOptions = [
+    { l: '1개월', v: 22 }, { l: '3개월', v: 66 },
+    { l: '6개월', v: 132 }, { l: '1년', v: 240 },
+  ];
+  const maOptions = [5, 20, 60, 120, 200];
+  const maColors = { 5: '#22c55e', 20: '#a855f7', 60: '#f59e0b', 120: '#3b82f6', 200: '#ec4899' };
+
+  function toggleMA(p) {
+    setMovingAverages(arr => arr.includes(p) ? arr.filter(x => x !== p) : [...arr, p].sort((a, b) => a - b));
+  }
 
   return (
-    <div className="container mt-4">
-    <div className="row align-items-center">
-      <div className="col">
-        <h2>
-          <a href={'/search/' + searchTerm} className="fs-3 me-2">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                width="30" 
-                height="30" 
-                fill="currentColor" 
-                className="bi bi-chevron-compact-left mb-2" 
-                viewBox="0 0 16 16"
-                color='gray'>
-              <path fill-rule="evenodd" 
-              d="M9.224 1.553a.5.5 0 0 1 .223.67L6.56 8l2.888 5.776a.5.5 0 1 1-.894.448l-3-6a.5.5 0 0 1 0-.448l3-6a.5.5 0 0 1 .67-.223z"/>
-            </svg>
-          </a>
-          {companyInfo.company}({companyInfo.code})
-        </h2>
-      </div>
-      <div className="col-3">
-        <div className='w-100'>
-          <InputButton IB={InputButton} toPage={'chart'}/>
+    <div className="page fade-in">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-md">
+        <BackLink to={`/search/${encodeURIComponent(searchTerm)}`}>{info?.company || searchTerm} 정보로</BackLink>
+        <div className="flex gap-sm">
+          <SearchInput variant="inline" toPage="chart" placeholder="다른 종목 차트" />
+          <Link className="btn btn-outline btn-sm" to={`/predict/${encodeURIComponent(searchTerm)}`}>주가 예측</Link>
         </div>
       </div>
-      <div className="card mt-4">
-        <div className='d-flex justify-content-between '>
-          <div className="chart-area table-responsive  flex-grow-1">
-            <h2 className="mt-3 mx-3">
-              <CandlestickChart 
-                  priceData={priceData}   
-                  selectedMovingAverages={selectedMovingAverages} 
-                  movingAverageColors={movingAverageColors} />
-            </h2>
+
+      <div className="card card-pad-lg">
+        <div className="flex justify-between items-center mb-6 flex-wrap gap-md">
+          <div>
+            <div className="eyebrow">차트 상세</div>
+            <h1 className="h-1 mt-2">
+              {info?.company || searchTerm}
+              {info?.code && <span className="body-sm" style={{ marginLeft: 8 }}>{info.code}</span>}
+            </h1>
+            {last.close && (
+              <div className="flex items-center gap-md mt-3">
+                <span className={'num ' + (isUp ? 'up' : 'down')} style={{ fontSize: 30, fontWeight: 700 }}>
+                  {fmt(last.close)}원
+                </span>
+                {prev.close && <DeltaPill price={last.close} prev={prev.close} big />}
+              </div>
+            )}
           </div>
-          <div className="moving-average-options me-4 mt-3">
-          <Dropdown show={showDropdown} onToggle={handleDropdownToggle}>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-              <svg xmlns="http://www.w3.org/2000/svg" 
-                   width="30" 
-                   height="30" 
-                   fill="currentColor" 
-                   class="bi bi-gear" 
-                   viewBox="0 0 16 16">
-                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
-              </svg>
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>
-                  <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(5)}
-                      onChange={() => handleMovingAverageSelect(5)}
-                    />
-                    MA5
-                  </label>
-                </div>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(20)}
-                      onChange={() => handleMovingAverageSelect(20)}
-                    />
-                    MA20
-                  </label>
-                </div>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(60)}
-                      onChange={() => handleMovingAverageSelect(60)}
-                    />
-                    MA60
-                  </label>
-                </div>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(120)}
-                      onChange={() => handleMovingAverageSelect(120)}
-                    />
-                    MA120
-                  </label>
-                </div>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(200)}
-                      onChange={() => handleMovingAverageSelect(200)}
-                    />
-                    MA200
-                  </label>
-                </div>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(225)}
-                      onChange={() => handleMovingAverageSelect(225)}
-                    />
-                    MA225
-                  </label>
-                </div>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                <div className='form-check'>
-                  <label>
-                    <input
-                      type="checkbox"
-                      className='form-check-input'
-                      checked={selectedMovingAverages.includes(720)}
-                      onChange={() => handleMovingAverageSelect(720)}
-                    />
-                    MA720
-                  </label>
-                </div>
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+          <div className="flex flex-wrap gap-md items-center">
+            <div className="segment">
+              {['일봉', '주봉', '월봉'].map(p => (
+                <button key={p} className={'segment-btn' + (period === p ? ' is-active' : '')}
+                  onClick={() => setPeriod(p)}>{p}</button>
+              ))}
+            </div>
+            <div className="segment">
+              {periodOptions.map(p => (
+                <button key={p.l} className={'segment-btn' + (days === p.v ? ' is-active' : '')}
+                  onClick={() => setDays(p.v)}>{p.l}</button>
+              ))}
+            </div>
           </div>
         </div>
+
+        <div className="flex flex-wrap gap-sm mb-4">
+          <span className="body-sm" style={{ alignSelf: 'center', marginRight: 8 }}>이동평균선</span>
+          {maOptions.map(p => (
+            <button key={p} onClick={() => toggleMA(p)} className="chip"
+              style={{
+                cursor: 'pointer',
+                background: movingAverages.includes(p) ? maColors[p] + '22' : 'var(--surface-hover)',
+                color: movingAverages.includes(p) ? maColors[p] : 'var(--text-3)',
+                fontWeight: movingAverages.includes(p) ? 600 : 500,
+                border: movingAverages.includes(p) ? `1px solid ${maColors[p]}55` : '1px solid transparent',
+              }}>
+              <span style={{ width: 8, height: 8, borderRadius: 50, background: maColors[p], opacity: movingAverages.includes(p) ? 1 : 0.4, display: 'inline-block' }} />
+              MA{p}
+            </button>
+          ))}
+        </div>
+
+        {candles.length > 0 ? (
+          <CandleChartView candles={candles} movingAverages={movingAverages} height={460} />
+        ) : (
+          <div className="empty">차트 데이터를 불러오는 중…</div>
+        )}
       </div>
-    </div>
+
+      {last.close && (
+        <div className="grid grid-4 mt-6 gap-md">
+          <MiniStat label="시가"   value={fmt(last.open)} />
+          <MiniStat label="고가"   value={fmt(last.high)} cls="up" />
+          <MiniStat label="저가"   value={fmt(last.low)}  cls="down" />
+          <MiniStat label="거래량" value={fmt(last.volume, { compact: true })} />
+        </div>
+      )}
     </div>
   );
+}
+
+function aggregate(candles, kind) {
+  const out = [];
+  let cur = null;
+  candles.forEach(c => {
+    const d = new Date(c.date);
+    const k = kind === 'month' ? c.date.slice(0, 7)
+      : `${d.getFullYear()}-W${Math.floor((d.getDate() + 6) / 7)}-${d.getMonth()}`;
+    if (!cur || cur._k !== k) {
+      if (cur) out.push(cur);
+      cur = { ...c, _k: k };
+    } else {
+      cur.high = Math.max(cur.high, c.high);
+      cur.low = Math.min(cur.low, c.low);
+      cur.close = c.close;
+      cur.volume += c.volume;
+    }
+  });
+  if (cur) out.push(cur);
+  return out;
 }
 
 export default ChartDetailPage;

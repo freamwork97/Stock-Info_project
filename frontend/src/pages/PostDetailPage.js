@@ -1,83 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { BackLink } from '../components/Bits';
 
 function PostDetailPage() {
-  let { id } = useParams();
+  const { id } = useParams();
   const [post, setPost] = useState(null);
-  const navigate = useNavigate(); 
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/post/${id}`);
-        const data = await response.json();
-        setPost(data[0]);
-        console.log(data);
-      } catch (error) {
-        console.error('데이터를 불러오는 중 오류 발생:', error);
-      }
-    };
-
-    fetchData();
+    fetch(`/post/${id}`)
+      .then(r => r.json())
+      .then(d => setPost(d?.[0] || null))
+      .catch(() => setPost(null));
   }, [id]);
 
   const handleDelete = async () => {
-    const validPassword = prompt("비밀번호를 입력하세요:");
-    if (validPassword === post.password) {
-      try {
-        const response = await fetch(`/posts/${id}?password=${validPassword}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (response.ok) {
-          navigate('/post');
-        } else {
-          setErrorMessage(data.detail);
-        }
-      } catch (error) {
-        console.error("게시물 삭제 중 오류 발생:", error);
-      }
-    }
+    const pw = prompt('비밀번호를 입력하세요:');
+    if (pw !== post?.password) return;
+    const r = await fetch(`/posts/${id}?password=${encodeURIComponent(pw)}`, { method: 'DELETE' });
+    const data = await r.json();
+    if (r.ok) navigate('/post');
+    else setError(data.detail);
   };
 
   const handleEdit = () => {
-    const validPassword = prompt("비밀번호를 입력하세요:");
-    if (validPassword === post.password) {
-      navigate(`/update/${id}`);
-    }
+    const pw = prompt('비밀번호를 입력하세요:');
+    if (pw === post?.password) navigate(`/update/${id}`);
   };
 
   if (!post) {
-    return <div className="container mt-4 text-center">게시물을 찾을 수 없습니다.</div>;
+    return <div className="page-narrow"><div className="empty">게시물을 불러오는 중…</div></div>;
   }
 
   return (
-    <div className="container mt-4 text-center">
-      <div className="fs-5 d-flex justify-content-between">
-        <p>작성자: {post.author}</p>
-        <p>작성일: {post.created_at}</p>
-      </div>
-      <h2 className="text-start mt-5 fs-1 fw-bold text-danger-emphasis">{post.title}</h2>
-      <p className="text-start mt-5 fs-3">{post.content}</p>
-        <div className='text-start'>
-          <button onClick={handleDelete}>게시물 삭제</button>
-          <button onClick={handleEdit}>게시물 수정</button>
-          {errorMessage && <div className="text-danger">{errorMessage}</div>}
-      </div>
-      <hr />
-      <div className='text-start p-1'>
-        <p className='fs-6'>
-          작성자 | 작성일
-        </p>
-        <p className='fs-3'>
-          댓글내용
-        </p>
-      </div>
-      <hr />
+    <div className="page-narrow fade-in">
+      <BackLink to="/post">목록으로</BackLink>
+      <article className="card card-pad-lg mt-4">
+        <h1 className="h-1">{post.title}</h1>
+        <div className="flex items-center justify-between mt-4 pb-4" style={{ borderBottom: '1px solid var(--border)' }}>
+          <div className="flex items-center gap-sm">
+            <div className="avatar">{post.author?.slice(0, 1)}</div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>{post.author}</div>
+              <div className="body-sm" style={{ fontSize: 12 }}>{(post.created_at || '').slice(0, 19)}</div>
+            </div>
+          </div>
+          <div className="flex gap-sm">
+            <button className="btn btn-outline btn-sm" onClick={handleEdit}>수정</button>
+            <button className="btn btn-outline btn-sm" style={{ color: 'var(--down)' }} onClick={handleDelete}>삭제</button>
+          </div>
+        </div>
+        <div className="mt-6" style={{ fontSize: 15.5, lineHeight: 1.75, color: 'var(--text-2)', whiteSpace: 'pre-wrap' }}>
+          {post.content}
+        </div>
+        {error && <div className="mt-3" style={{ color: 'var(--down)' }}>{error}</div>}
+      </article>
     </div>
   );
 }

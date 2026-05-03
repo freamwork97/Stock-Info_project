@@ -1,99 +1,111 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import InputButton from '../components/InputButton';
-import FinancialStatements from '../components/financialStatements';
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import SearchInput from '../components/SearchInput';
 import News from '../components/News';
-import {fetchStockData,fetchStockPrice} from '../components/fetchStockData';
-import {drawChart} from '../components/drawChart';
+import FinancialStatements from '../components/financialStatements';
+import { Sparkline } from '../components/Charts';
+import { DeltaPill, BackLink, Stat } from '../components/Bits';
+import { delta, fmt } from '../utils/format';
 
 function SearchResultPage() {
   const { searchTerm } = useParams();
-  const [companyInfo, setCompanyInfo] = useState({});
-  const [stockChart, setStockChart] = useState([]);
-  const [stockprice, setStockPrice] = useState([]);
-  const canvasRef = useRef(null);
-  const myChart = useRef(null);
-  const navigate = useNavigate();
+  const [info, setInfo] = useState(null);
+  const [price, setPrice] = useState({});
+  const [tab, setTab] = useState('뉴스');
 
-  const handleSearch = () => {
-    navigate(`/Chart/${searchTerm}`);
-  };
-
-  const fetchStockPriceData = () => {
-    fetchStockPrice(searchTerm, setStockPrice);
-  };
-  
   useEffect(() => {
-    fetchStockData(searchTerm, setCompanyInfo, setStockChart);
+    fetch(`/stock/${encodeURIComponent(searchTerm)}`)
+      .then(r => r.json())
+      .then(setInfo)
+      .catch(() => setInfo(null));
   }, [searchTerm]);
 
   useEffect(() => {
-    drawChart(stockChart, canvasRef, myChart);
-  }, [stockChart]);
-
-  useEffect(() => {
-    fetchStockPrice(searchTerm, setStockPrice);
-    console.log(searchTerm);
+    let timer;
+    const load = () => {
+      fetch(`/get_stock_price/${encodeURIComponent(searchTerm)}`)
+        .then(r => r.json())
+        .then(setPrice)
+        .catch(() => {});
+    };
+    load();
+    timer = setInterval(load, 20000);
+    return () => clearInterval(timer);
   }, [searchTerm]);
 
-  useEffect(() => {
-    fetchStockPriceData(); // 초기 데이터 호출
-
-    const interval = setInterval(fetchStockPriceData, 20000); // 20초마다 호출
-
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 clearInterval
-  });
+  const closes = (info?.daily_prices || []).map(d => Number(d.close ?? d.종가)).filter(Boolean);
+  const cur = Number(price.종가) || closes[closes.length - 1];
+  const prev = Number(price.전일종가) || closes[closes.length - 2];
 
   return (
-    <div className="container mt-4">
-      <div className='input-group'>
-        <a href='/' className="fs-3 me-2">
-        <svg xmlns="http://www.w3.org/2000/svg" 
-              width="40" 
-              height="30" 
-              fill="currentColor" 
-              className="bi bi-chevron-compact-left mb-2" 
-              viewBox="0 0 16 16"
-              color='gray'>
-            <path fill-rule="evenodd" 
-            d="M9.224 1.553a.5.5 0 0 1 .223.67L6.56 8l2.888 5.776a.5.5 0 1 1-.894.448l-3-6a.5.5 0 0 1 0-.448l3-6a.5.5 0 0 1 .67-.223z"/>
-          </svg>
-        </a>
-        <InputButton IB={InputButton} toPage={'/'} />
-      </div>
-      <div className="row">
-        <div className="col-md-8">
-          <News searchTerm={searchTerm}/>
+    <div className="page fade-in">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-md">
+        <BackLink to="/">홈으로</BackLink>
+        <div className="flex gap-sm">
+          <SearchInput variant="inline" toPage="/" placeholder="다른 종목 검색" />
+          <Link className="btn btn-outline btn-sm" to={`/chart/${encodeURIComponent(searchTerm)}`}>상세 차트 →</Link>
+          <Link className="btn btn-outline btn-sm" to={`/predict/${encodeURIComponent(searchTerm)}`}>주가 예측</Link>
         </div>
-        <div className="col-md-4">
-          <div className="card mb-4">
-            <div className="card-body">
-              <div className="company-info mb-4">
-                <h2 onClick={handleSearch}>
-                  {companyInfo.company} 
-                  ({companyInfo.code}) 
-                </h2>
-                <h3>
-                현재가: {stockprice.종가}
-              </h3>
+      </div>
+
+      <div className="grid" style={{ gridTemplateColumns: '1.4fr 1fr', gap: 24 }}>
+        <div className="card card-pad-lg">
+          <div className="flex items-center gap-md mb-3">
+            <div style={{
+              width: 52, height: 52, borderRadius: 14,
+              background: 'var(--brand-soft)', color: 'var(--brand-strong)',
+              display: 'grid', placeItems: 'center',
+              fontSize: 22, fontWeight: 700, fontFamily: 'var(--font-mono)',
+            }}>{(info?.company || searchTerm).slice(0, 1)}</div>
+            <div>
+              <div className="flex items-center gap-sm">
+                <h1 className="h-1">{info?.company || searchTerm}</h1>
+                {info?.code && <span className="chip">{info.code}</span>}
               </div>
-              <div className="stock-chart">
-                <ul className="list-unstyled">
-                      전일종가: {stockprice.전일종가}<br></br>
-                      시가: {stockprice.시가}<br></br>
-                      고가: {stockprice.고가}<br></br>
-                      저가: {stockprice.저가}<br></br>
-                      거래량: {stockprice.거래량}
-                </ul>
-                <canvas onClick={handleSearch} ref={canvasRef} width="100" height="50"></canvas>
-              </div>
+              <div className="body-sm mt-2">KRX · 종가 기준</div>
             </div>
           </div>
-          <hr></hr>
+
+          <div className="flex items-end gap-md mt-4">
+            <div className={'price-big num ' + (delta(cur, prev).isUp ? 'up' : 'down')}>
+              {fmt(cur)}<span style={{ fontSize: 22, fontWeight: 500, marginLeft: 4 }}>원</span>
+            </div>
+            {prev && <DeltaPill price={cur} prev={prev} big />}
+          </div>
+
+          {closes.length > 1 && (
+            <div className="mt-6"><Sparkline data={closes} height={120} /></div>
+          )}
+
+          <div className="grid grid-4 mt-6 gap-md">
+            <Stat label="시가"     value={fmt(price.시가)} />
+            <Stat label="고가"     value={fmt(price.고가)} cls="up" />
+            <Stat label="저가"     value={fmt(price.저가)} cls="down" />
+            <Stat label="거래량"   value={fmt(price.거래량, { compact: true })} />
+            <Stat label="전일종가" value={fmt(price.전일종가)} />
+          </div>
         </div>
-        {/* 재무제표 정보 */}
-        <FinancialStatements searchTerm={searchTerm} />
+
+        <div className="card card-pad-lg">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="h-2">관련 뉴스</h2>
+          </div>
+          <div className="scroll-y" style={{ maxHeight: 540 }}>
+            <News searchTerm={searchTerm} />
+          </div>
+        </div>
+      </div>
+
+      <div className="card mt-6">
+        <div className="tabs" style={{ paddingTop: 4 }}>
+          {['뉴스', '재무제표'].map(t => (
+            <button key={t} className={'tab' + (tab === t ? ' is-active' : '')} onClick={() => setTab(t)}>{t}</button>
+          ))}
+        </div>
+        <div style={{ padding: 22 }}>
+          {tab === '뉴스' && <News searchTerm={searchTerm} />}
+          {tab === '재무제표' && <FinancialStatements searchTerm={searchTerm} />}
+        </div>
       </div>
     </div>
   );

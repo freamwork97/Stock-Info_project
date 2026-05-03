@@ -1,62 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../components/Pagination';
 
-const postsPerPage = 4; // 페이지 당 게시물 수
-
-function PostListItem({ post }) {
-  return (
-    <div className="mb-3">
-      <div className="">
-        <h5 className="">
-          <Link className='text-black' to={`/post/${post.id}`}>{post.title}</Link>
-        </h5>
-        <p className="card-text">
-          작성자: {post.author} | 작성일: {post.created_at}
-        </p>
-      </div>
-      <hr></hr>
-    </div>
-  );
-}
+const PER_PAGE = 8;
 
 function PostListPage() {
-  const [post, setPost] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/post');
-        const data = await response.json();
-        setPost(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    fetch('/post')
+      .then(r => r.json())
+      .then(d => setPosts(Array.isArray(d) ? d : []))
+      .catch(() => setPosts([]));
   }, []);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
+  const list = posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
-    <div className="container mt-4">
-      <h2>게시물 목록</h2>
-      {currentPosts.map(post => (
-        <PostListItem key={post.id} post={post} />
-      ))}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(post.length / postsPerPage)}
-        onPageChange={handlePageChange}
-      />
+    <div className="page-narrow fade-in">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <div className="eyebrow">커뮤니티</div>
+          <h1 className="h-1 mt-2">투자자 게시판</h1>
+          <div className="body-sm mt-2">총 {posts.length}개의 글</div>
+        </div>
+        <Link to="/write" className="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          글쓰기
+        </Link>
+      </div>
+
+      <div className="card">
+        <div className="post-row" style={{ background: 'var(--surface-2)', fontSize: 12.5, color: 'var(--text-3)', fontWeight: 500 }}>
+          <div>번호</div><div>제목</div><div>작성자</div><div>작성일</div><div></div>
+        </div>
+        {list.length === 0 && <div className="empty">게시글이 없습니다</div>}
+        {list.map(p => (
+          <Link key={p.id} className="post-row" to={`/post/${p.id}`}>
+            <div className="num">{p.id}</div>
+            <div className="title">{p.title}</div>
+            <div className="meta">{p.author}</div>
+            <div className="meta">{(p.created_at || '').slice(0, 10)}</div>
+            <div></div>
+          </Link>
+        ))}
+      </div>
+
+      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

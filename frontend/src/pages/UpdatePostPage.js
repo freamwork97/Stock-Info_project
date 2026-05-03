@@ -1,80 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { BackLink } from '../components/Bits';
 
-function EditPostPage() {
-  let { id } = useParams();
-  const navigate = useNavigate();
+function UpdatePostPage() {
+  const { id } = useParams();
+  const [content, setContent] = useState('');
+  const [password, setPassword] = useState('');
   const [post, setPost] = useState(null);
-  const [content, setContent] = useState(""); // 수정할 내용 상태
-  const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/post/${id}`);
-        const data = await response.json();
-        setPost(data[0]);
-        console.log(data);
-      } catch (error) {
-        console.error('데이터를 불러오는 중 오류 발생:', error);
-      }
-    };
-
-    fetchData();
+    fetch(`/post/${id}`)
+      .then(r => r.json())
+      .then(d => {
+        const p = d?.[0];
+        if (p) { setPost(p); setContent(p.content || ''); }
+      });
   }, [id]);
 
-  const handleEdit = async () => {
-    const validPassword = prompt("비밀번호를 입력하세요:");
-        if (validPassword === post.password) {
-        try {
-            const response = await fetch(`/posts/${id}/${content}/${validPassword}`, {
-                method: "put", // 수정 요청은 PUT 메서드 사용
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ validPassword, content }), // 비밀번호와 수정할 내용 전송
-            });
-            const data = await response.json();
-            if (response.ok) {
-                // 수정 성공 시 해당 게시물의 상세 페이지로 이동
-                navigate(`/post/${id}`);
-            } else {
-                // 수정 실패 시 에러 메시지 표시
-                setErrorMessage(data.detail);
-            }
-        } catch (error) {
-            console.error("게시물 수정 중 오류 발생:", error);
-        }
-    }
-};
-
-  
-
-  if (!post) {
-    return <div className="container mt-4 text-center">게시물을 찾을 수 없습니다.</div>;
-  }
+  const submit = async (e) => {
+    e.preventDefault();
+    const r = await fetch(`/posts/${id}/${encodeURIComponent(content)}/${encodeURIComponent(password)}`, { method: 'PUT' });
+    if (r.ok) { alert('수정되었습니다.'); navigate(`/post/${id}`); }
+    else alert('수정에 실패했습니다. 비밀번호를 확인하세요.');
+  };
 
   return (
-    <div className="container mt-4 text-center">
-      <div className="fs-5 d-flex justify-content-between">
-        <p>작성자: {post.author}</p>
-        <p>작성일: {post.created_at}</p>
-      </div>
-      <h2 className="text-start mt-5 fs-1 fw-bold text-danger-emphasis">{post.title}</h2>
-      <textarea
-        className="form-control mt-5"
-        rows="5"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <div className="mt-4">
-        <button className="btn btn-primary ms-2" onClick={handleEdit}>
-          게시물 수정
-        </button>
-        {errorMessage && <div className="text-danger">{errorMessage}</div>}
+    <div className="page-narrow fade-in">
+      <BackLink to={`/post/${id}`}>게시물로</BackLink>
+      <div className="card card-pad-lg mt-4">
+        <h1 className="h-1 mb-4">게시글 수정</h1>
+        {post && <p className="body-sm mb-6">제목: {post.title}</p>}
+        <form onSubmit={submit}>
+          <div className="field">
+            <label className="field-label">내용</label>
+            <textarea className="textarea" rows="12" required
+              value={content} onChange={e => setContent(e.target.value)} />
+          </div>
+          <div className="field" style={{ maxWidth: 280 }}>
+            <label className="field-label">비밀번호</label>
+            <input className="input" type="password" required
+              value={password} onChange={e => setPassword(e.target.value)} />
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <a href={`/post/${id}`} className="btn btn-ghost">취소</a>
+            <button type="submit" className="btn btn-primary">수정 완료</button>
+          </div>
+        </form>
       </div>
     </div>
   );
 }
 
-export default EditPostPage;
+export default UpdatePostPage;

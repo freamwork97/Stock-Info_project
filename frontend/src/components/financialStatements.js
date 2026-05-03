@@ -1,58 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function FinancialStatements({ searchTerm }) {
-  const [financialStatements, setFinancialStatements] = useState([]);
-
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchFinancialStatements = async () => {
-        try {
-          const response = await fetch(`/financial_statements/${searchTerm}`);
-          const data = await response.json();
-            
-          if (Array.isArray(data)) {
-            setFinancialStatements(data);
-          }
-        } catch (error) {
-            console.error('재무제표를 불러오는 중 오류가 발생했습니다:', error);
-          }
-    };
-
-    fetchFinancialStatements();
+    setLoading(true);
+    fetch(`/financial_statements/${encodeURIComponent(searchTerm)}`)
+      .then(r => r.json())
+      .then(d => setRows(Array.isArray(d) ? d : []))
+      .catch(() => setRows([]))
+      .finally(() => setLoading(false));
   }, [searchTerm]);
 
-  if (financialStatements.length === 0) {
-    return null; // 재무제표가 없을 경우 컴포넌트 렌더링을 중지하고 아무것도 렌더링하지 않음
-  }
+  if (loading) return <div className="empty">재무제표 불러오는 중…</div>;
+  if (!rows.length) return <div className="empty">재무제표가 없습니다</div>;
 
   return (
-    <div>
-      <h2 className="mb-4">재무제표</h2>
-      <div className="table-responsive">
-        <table className="table table-bordered table-striped">
-          <thead className="bg-dark text-white">
-            <tr>
-              <th scope="col">사업연도</th>
-              <th scope="col">계정명</th>
-              <th scope="col">당기명</th>
-              <th scope="col">당기일자</th>
-              <th scope="col">당기금액</th>
-              <th scope="col">통화</th>
+    <div className="scroll-x">
+      <table className="table table-clean">
+        <thead>
+          <tr>
+            <th>사업연도</th>
+            <th>계정명</th>
+            <th>당기명</th>
+            <th>당기일자</th>
+            <th style={{ textAlign: 'right' }}>당기금액</th>
+            <th>통화</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((s, i) => (
+            <tr key={i}>
+              <td>{s.사업연도}</td>
+              <td style={{ fontWeight: 500 }}>{s.계정명}</td>
+              <td>{s.당기명}</td>
+              <td className="num" style={{ color: 'var(--text-3)' }}>{s.당기일자}</td>
+              <td className="num" style={{ textAlign: 'right' }}>{s.당기금액}</td>
+              <td className="num" style={{ color: 'var(--text-3)' }}>{s.통화}</td>
             </tr>
-          </thead>
-          <tbody>
-            {financialStatements.map((statement, index) => (
-              <tr key={index}>
-                <td>{statement.사업연도}</td>
-                <td>{statement.계정명}</td>
-                <td>{statement.당기명}</td>
-                <td>{statement.당기일자}</td>
-                <td>{statement.당기금액}</td>
-                <td>{statement.통화}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
