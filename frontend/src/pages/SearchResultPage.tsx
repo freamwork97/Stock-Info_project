@@ -12,7 +12,6 @@ function SearchResultPage(): JSX.Element {
   const { searchTerm = '' } = useParams<{ searchTerm: string }>();
   const [info, setInfo] = useState<StockInfo | null>(null);
   const [price, setPrice] = useState<LatestStockPrice | null>(null);
-  const [tab, setTab] = useState('뉴스');
 
   useEffect(() => {
     fetch(`/stock/${encodeURIComponent(searchTerm)}`)
@@ -112,13 +111,10 @@ function SearchResultPage(): JSX.Element {
 
       <div className="card mt-6">
         <div className="tabs" style={{ paddingTop: 4 }}>
-          {['뉴스', '재무제표'].map(t => (
-            <button key={t} className={'tab' + (tab === t ? ' is-active' : '')} onClick={() => setTab(t)}>{t}</button>
-          ))}
+          <button className="tab is-active">재무제표</button>
         </div>
         <div style={{ padding: 22 }}>
-          {tab === '뉴스' && <News searchTerm={searchTerm} />}
-          {tab === '재무제표' && <FinancialStatements searchTerm={searchTerm} />}
+          <FinancialStatements searchTerm={searchTerm} />
         </div>
       </div>
     </div>
