@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from pykrx import stock as krx
-from db_utils import find_stock_code_by_name
+from core.stock_queries import find_stock_code_by_name
 
 
 def get_stock_price(stock_name: str) -> dict:

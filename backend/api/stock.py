@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import List
 
 from schemas import StockInfo, StockPriceResponse
-from db_utils import get_stock_info, get_company_names
+from core.stock_queries import get_stock_info, get_company_names
 from services.stock_service import get_stock_price, get_ohlcv
 
 router = APIRouter(tags=["stock"])

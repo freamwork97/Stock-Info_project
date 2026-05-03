@@ -1,4 +1,5 @@
-from db_utils import load_financial_statements, find_stock_code_by_name
+from core.financial_queries import load_financial_statements
+from core.stock_queries import find_stock_code_by_name
 
 def get_financial_statements_by_name(stock_name: str):
     financial_statements_df = load_financial_statements()

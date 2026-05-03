@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import List
 
 from schemas import PostCreate, PostUpdate, PostResponse
-from db_utils import create_post, get_post, get_post_one, update_post, delete_post
+from core.post_queries import create_post, get_post, get_post_one, update_post, delete_post
 
 router = APIRouter(tags=["post"])
 
