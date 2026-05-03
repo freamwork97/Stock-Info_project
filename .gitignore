@@ -1,4 +1,4 @@
-conf/
+conf/*.ini
 database/
 backend/__pycache__
 financial_statements/

@@ -1,0 +1,19 @@
+[database]
+# Docker Compose 환경에서는 host를 mysql 컨테이너 이름으로 지정
+host=mysql
+user=your_db_user
+password=your_db_password
+db_name=your_db_name
+
+[naver]
+url=https://www.naver.com
+
+[dart]
+# OpenDART API 키 (https://opendart.fss.or.kr 에서 발급)
+api_key=your_dart_api_key
+api_key2=your_dart_api_key2
+
+[naver_API]
+# 네이버 검색 API (https://developers.naver.com 에서 발급)
+Client_ID=your_naver_client_id
+Client_Secret=your_naver_client_secret
