@@ -91,8 +91,9 @@ export function CandleChartView({ candles, height = 460, movingAverages = [], ma
   useEffect(() => {
     if (!ref.current || !candles?.length) return;
     if (chart.current) chart.current.destroy();
-    const upColor = getCSSVar('--up');
-    const downColor = getCSSVar('--down');
+    const UP = '#f0454a';    // 상승 — 한국식 빨강
+    const DOWN = '#2c6df2';  // 하락 — 한국식 파랑
+    const FLAT = '#888888';  // 보합
     const grid = getCSSVar('--border');
     const text = getCSSVar('--text-3');
     const candleData = candles.map(c => ({
@@ -125,9 +126,9 @@ export function CandleChartView({ candles, height = 460, movingAverages = [], ma
           {
             label: '가격', data: candleData,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            borderColor: { up: upColor, down: downColor, unchanged: text } as any,
+            borderColors: { up: UP, down: DOWN, unchanged: FLAT } as any,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            backgroundColor: { up: upColor, down: downColor, unchanged: text } as any,
+            backgroundColors: { up: UP, down: DOWN, unchanged: FLAT } as any,
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ...(maDatasets as any[]),
