@@ -129,3 +129,8 @@ docker compose up -d
 | GET | `/news/{query}` | 네이버 뉴스 (썸네일 포함) |
 | GET | `/key_index` | 주요 지수 |
 | GET | `/exchange_rate` | 환율 |
+
+---
+
+## 참고 문헌
+- 김황후. (2020.07.01). *파이썬 증권 데이터 분석*. 한빛 미디어.
