@@ -1,20 +1,36 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
+import yfinance as yf
 from prophet import Prophet
 
-from services.stock_service import get_stock_price
+from core.stock_queries import get_stock_info
+
+
+def _fetch_ohlcv_for_predict(code: str, years: int = 5) -> pd.DataFrame:
+    """yfinance로 예측용 OHLCV 조회 (종가만 사용, ASC 순서)"""
+    start = (datetime.now() - timedelta(days=years * 365)).strftime("%Y-%m-%d")
+    end = datetime.now().strftime("%Y-%m-%d")
+
+    for suffix in ("KS", "KQ"):
+        df = yf.Ticker(f"{code}.{suffix}").history(start=start, end=end, auto_adjust=True)
+        if not df.empty:
+            df.index = df.index.tz_localize(None)
+            df = df.reset_index()[["Date", "Close"]]
+            df.columns = ["ds", "y"]
+            df["ds"] = pd.to_datetime(df["ds"])
+            return df.sort_values("ds").reset_index(drop=True)
+
+    return pd.DataFrame()
 
 
 def predict_result(stock_name: str) -> dict:
-    prices = get_stock_price(stock_name)
-    if "error" in prices:
-        return {"error": prices["error"]}
+    info = get_stock_info(stock_name)
+    code = info["code"]
 
-    df = pd.DataFrame({
-        "ds": [datetime.strptime(d, "%Y%m%d") for d in prices["날짜"]],
-        "y": prices["종가"],
-    })
+    df = _fetch_ohlcv_for_predict(code)
+    if df.empty:
+        return {"error": "주가 데이터를 가져올 수 없습니다."}
 
     model = Prophet()
     model.fit(df)
