@@ -1,5 +1,6 @@
-// 포맷터 + delta 계산 유틸
-export function fmt(n, opts = {}) {
+import type { FmtOptions, DeltaResult } from '../types/format';
+
+export function fmt(n: number | null | undefined, opts: FmtOptions = {}): string {
   if (n === null || n === undefined || isNaN(n)) return '—';
   if (opts.compact) {
     const a = Math.abs(n);
@@ -13,13 +14,13 @@ export function fmt(n, opts = {}) {
   });
 }
 
-export function fmtPct(n, dp = 2) {
+export function fmtPct(n: number | null, dp = 2): string {
   if (n === null || isNaN(n)) return '—';
   const sign = n > 0 ? '+' : '';
   return sign + n.toFixed(dp) + '%';
 }
 
-export function delta(price, prev) {
+export function delta(price: number | string, prev: number | string): DeltaResult {
   const p = Number(price), pv = Number(prev);
   if (!pv) return { diff: 0, pct: 0, isUp: true };
   const diff = p - pv;
@@ -27,6 +28,6 @@ export function delta(price, prev) {
   return { diff, pct, isUp: diff >= 0 };
 }
 
-export function getCSSVar(name) {
+export function getCSSVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
