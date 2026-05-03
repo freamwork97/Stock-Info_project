@@ -30,4 +30,5 @@ dependencies = [
     "typing-extensions==4.8.0",
     "yfinance>=0.2.40",
     "setuptools",
+    "sqlalchemy>=2.0",
 ]
