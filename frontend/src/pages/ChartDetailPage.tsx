@@ -47,10 +47,11 @@ function ChartDetailPage(): JSX.Element {
   }, [searchTerm]);
 
   const allCandles = useMemo<CandleData[]>(() => {
+    // DB는 DESC(최신→과거) 순, 차트 렌더링을 위해 ASC로 뒤집음
     return (info?.daily_prices || []).map(d => ({
       date: d.date, open: +d.open, high: +d.high,
       low: +d.low, close: +d.close, volume: +d.volume,
-    })).filter(c => !isNaN(c.close));
+    })).filter(c => !isNaN(c.close)).reverse();
   }, [info]);
 
   const candles = useMemo<CandleData[]>(() => {

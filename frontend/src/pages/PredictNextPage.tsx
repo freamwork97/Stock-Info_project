@@ -21,7 +21,8 @@ function PredictNextPage(): JSX.Element {
       .catch(() => setPred(null));
   }, [searchTerm]);
 
-  const history = (info?.daily_prices || []).map(d => ({ date: d.date, close: +d.close })).filter(h => h.close);
+  // DB는 DESC(최신→과거) 순, 차트·lastClose 계산을 위해 ASC로 뒤집음
+  const history = (info?.daily_prices || []).map(d => ({ date: d.date, close: +d.close })).filter(h => h.close).reverse();
   const lastClose = history[history.length - 1]?.close;
   const lastPred = pred?.close?.[pred.close.length - 1];
 

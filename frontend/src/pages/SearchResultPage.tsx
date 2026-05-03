@@ -43,7 +43,11 @@ function SearchResultPage(): JSX.Element {
     return () => clearInterval(timer);
   }, [searchTerm]);
 
-  const closes = (info?.daily_prices || []).map(d => Number(d.close ?? 0)).filter(Boolean);
+  // DB는 DESC(최신→과거) 순, 차트·fallback 계산을 위해 ASC로 뒤집음
+  const closes = (info?.daily_prices || [])
+    .map(d => Number(d.close ?? 0))
+    .filter(Boolean)
+    .reverse();
   const cur = price?.종가 ?? closes[closes.length - 1];
   const prev = price?.전일종가 ?? closes[closes.length - 2];
 
