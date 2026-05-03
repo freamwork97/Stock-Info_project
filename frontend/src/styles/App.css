@@ -343,6 +343,8 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; margin: 0; }
 
 /* ===========  HERO (main page)  =========== */
 .hero {
+  position: relative;
+  z-index: 1;
   padding: 56px 0 40px;
   text-align: center;
 }
