@@ -48,24 +48,10 @@ def get_stock_info(stock_name):
 
             company, code, last_update = result
 
-            sql = f"""
-                SELECT date, open, high, low, close
-                FROM daily_price
-                WHERE code = %s 
-                ORDER BY date DESC
-            """
-            curs.execute(sql, code)
-            daily_prices = [{'date': date, 
-                             'open': open, 
-                             'high': high, 
-                             'low': low, 
-                             'close': close} for date, open, high, low, close in curs.fetchall()]
-
             return {
                 'company': company,
                 'code': code,
                 'last_update': last_update.strftime('%Y-%m-%d'),
-                'daily_prices': daily_prices
             }
     finally:
         conn.close()

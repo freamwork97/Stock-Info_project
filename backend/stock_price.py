@@ -2,6 +2,25 @@ from datetime import datetime, timedelta
 from pykrx import stock
 from db_utils import find_stock_code_by_name
 
+def get_ohlcv(code: str, days: int = 400) -> list:
+    import yfinance as yf
+    import pandas as pd
+    start = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+    end = datetime.now().strftime('%Y-%m-%d')
+    for suffix in ('KS', 'KQ'):
+        ticker = yf.Ticker(f"{code}.{suffix}")
+        df = ticker.history(start=start, end=end, auto_adjust=True)
+        if df.empty:
+            continue
+        df.index = df.index.tz_localize(None)
+        df = df.reset_index()
+        df = df.rename(columns={'Date': 'date', 'Open': 'open', 'High': 'high', 'Low': 'low', 'Close': 'close', 'Volume': 'volume'})
+        df['date'] = pd.to_datetime(df['date']).dt.strftime('%Y-%m-%d')
+        df[['open', 'high', 'low', 'close', 'volume']] = df[['open', 'high', 'low', 'close', 'volume']].round(0).astype(int)
+        records = df[['date', 'open', 'high', 'low', 'close', 'volume']].to_dict('records')
+        return list(reversed(records))  # DESC (최신→과거)
+    return []
+
 def get_stock_price(stock_name: str):
     now = datetime.now()
     end_date = now.strftime("%Y%m%d")

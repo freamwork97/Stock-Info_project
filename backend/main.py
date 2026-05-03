@@ -7,7 +7,7 @@ from db_utils import get_stock_info,get_company_names,create_post,get_post,get_p
 from news_utils import get_naver_news
 from exchange_rate import get_exchange_rate
 from corp_code import get_financial_statements_by_name
-from stock_price import get_stock_price
+from stock_price import get_stock_price, get_ohlcv
 from key_index import get_key_index
 from predict import predict_result
 #######################################################
@@ -50,7 +50,9 @@ class PostCreate(BaseModel):
 # 주식정보
 @app.get("/stock/{stock_name}", response_model=StockInfo)
 def read_stock_info(stock_name: str):
-    return get_stock_info(stock_name)
+    info = get_stock_info(stock_name)
+    info['daily_prices'] = get_ohlcv(info['code'])
+    return info
 
 # 뉴스
 @app.get("/news/{search_query}", response_model=List[NewsItem])
