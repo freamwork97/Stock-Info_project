@@ -47,6 +47,7 @@ export interface CandleChartViewProps {
   candles: CandleData[];
   height?: number;
   movingAverages?: number[];
+  maColors?: Record<number, string>;
 }
 
 export interface HistoryPoint {

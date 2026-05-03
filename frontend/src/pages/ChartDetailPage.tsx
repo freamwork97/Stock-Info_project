@@ -137,7 +137,7 @@ function ChartDetailPage(): JSX.Element {
         </div>
 
         {candles.length > 0 ? (
-          <CandleChartView candles={candles} movingAverages={movingAverages} height={460} />
+          <CandleChartView candles={candles} movingAverages={movingAverages} maColors={maColors} height={460} />
         ) : (
           <div className="empty">차트 데이터를 불러오는 중…</div>
         )}

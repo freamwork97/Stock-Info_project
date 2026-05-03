@@ -84,7 +84,7 @@ export function LineChartView({ labels, data, height = 280, color }: LineChartVi
 }
 
 // ===== Candlestick =====
-export function CandleChartView({ candles, height = 460, movingAverages = [] }: CandleChartViewProps): JSX.Element {
+export function CandleChartView({ candles, height = 460, movingAverages = [], maColors = {} }: CandleChartViewProps): JSX.Element {
   const ref = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart | null>(null);
 
@@ -111,10 +111,11 @@ export function CandleChartView({ candles, height = 460, movingAverages = [] }: 
       }
       return out;
     };
-    const colors = ['#22c55e', '#a855f7', '#f59e0b', '#3b82f6', '#ec4899', '#06b6d4'];
-    const maDatasets = movingAverages.map((p, i) => ({
+    const fallbackColors: Record<number, string> = { 5: '#22c55e', 20: '#a855f7', 60: '#f59e0b', 120: '#3b82f6', 200: '#ec4899' };
+    const colorMap = { ...fallbackColors, ...maColors };
+    const maDatasets = movingAverages.map((p) => ({
       type: 'line' as const, label: `MA${p}`, data: sma(p),
-      borderColor: colors[i % colors.length], borderWidth: 1.5,
+      borderColor: colorMap[p] ?? '#06b6d4', borderWidth: 1.5,
       pointRadius: 0, fill: false, tension: 0,
     }));
     chart.current = new Chart(ref.current, {
