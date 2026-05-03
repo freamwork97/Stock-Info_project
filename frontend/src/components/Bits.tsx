@@ -1,11 +1,12 @@
 import React from 'react';
 import { delta, fmt, fmtPct } from '../utils/format';
+import type { DeltaPillProps, BackLinkProps, StatProps, MiniStatProps } from '../types/components';
 
-export function DeltaPill({ price, prev, big = false, dp = 2 }) {
+export function DeltaPill({ price, prev, big = false, dp = 2 }: DeltaPillProps): JSX.Element {
   const { diff, pct, isUp } = delta(price, prev);
   const cls = 'chip ' + (isUp ? 'chip-up' : 'chip-down');
   const arrow = isUp ? '▲' : '▼';
-  const style = big ? { height: 32, fontSize: 14, padding: '0 12px' } : null;
+  const style = big ? { height: 32, fontSize: 14, padding: '0 12px' } : undefined;
   return (
     <span className={cls} style={style}>
       <span>{arrow}</span>
@@ -15,7 +16,7 @@ export function DeltaPill({ price, prev, big = false, dp = 2 }) {
   );
 }
 
-export function BackLink({ to, children = '뒤로' }) {
+export function BackLink({ to, children = '뒤로' }: BackLinkProps): JSX.Element {
   return (
     <a href={to} className="btn btn-ghost btn-sm" style={{ paddingLeft: 6, color: 'var(--text-2)' }}>
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -26,7 +27,7 @@ export function BackLink({ to, children = '뒤로' }) {
   );
 }
 
-export function Stat({ label, value, cls }) {
+export function Stat({ label, value, cls }: StatProps): JSX.Element {
   return (
     <div>
       <div className="body-sm" style={{ fontSize: 12, color: 'var(--text-3)' }}>{label}</div>
@@ -35,7 +36,7 @@ export function Stat({ label, value, cls }) {
   );
 }
 
-export function MiniStat({ label, value, cls }) {
+export function MiniStat({ label, value, cls }: MiniStatProps): JSX.Element {
   return (
     <div className="card card-pad">
       <div className="body-sm" style={{ fontSize: 12 }}>{label}</div>

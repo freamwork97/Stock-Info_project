@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Footer() {
+function Footer(): JSX.Element {
   return (
     <footer className="footer">
       <div>스톡인포 · Stock-Info © 2026 windra</div>

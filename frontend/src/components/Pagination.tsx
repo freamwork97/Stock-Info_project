@@ -1,6 +1,7 @@
 import React from 'react';
+import type { PaginationProps } from '../types/components';
 
-function Pagination({ currentPage, totalPages, onPageChange }) {
+function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps): JSX.Element | null {
   if (totalPages <= 1) return null;
   return (
     <div className="flex justify-between items-center mt-6">
