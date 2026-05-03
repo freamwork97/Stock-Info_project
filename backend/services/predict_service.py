@@ -1,10 +1,16 @@
 from datetime import datetime, timedelta
+from threading import Lock
 
 import pandas as pd
 import yfinance as yf
 from prophet import Prophet
 
 from core.stock_queries import get_stock_info
+
+CACHE_TTL_HOURS = 6
+
+_cache: dict[str, tuple[dict, datetime]] = {}
+_cache_lock = Lock()
 
 # 한국 주식시장 공휴일 (Prophet이 거래 없는 날 패턴 학습하지 않도록)
 _KR_HOLIDAYS = pd.DataFrame({
@@ -65,14 +71,7 @@ def _fetch_ohlcv_for_predict(code: str, years: int = 5) -> pd.DataFrame:
     return pd.DataFrame()
 
 
-def predict_result(stock_name: str) -> dict:
-    info = get_stock_info(stock_name)
-    code = info["code"]
-
-    df = _fetch_ohlcv_for_predict(code)
-    if df.empty:
-        return {"error": "주가 데이터를 가져올 수 없습니다."}
-
+def _run_prophet(df: pd.DataFrame) -> dict:
     model = Prophet(
         seasonality_mode="multiplicative",
         changepoint_prior_scale=0.15,
@@ -83,7 +82,6 @@ def predict_result(stock_name: str) -> dict:
         holidays=_KR_HOLIDAYS,
     )
     model.fit(df)
-
     future = model.make_future_dataframe(periods=365)
     forecast = model.predict(future)
 
@@ -93,3 +91,28 @@ def predict_result(stock_name: str) -> dict:
         "예측고가": forecast["yhat_upper"].tolist(),
         "예측저가": forecast["yhat_lower"].tolist(),
     }
+
+
+def predict_result(stock_name: str) -> dict:
+    info = get_stock_info(stock_name)
+    code = info["code"]
+
+    with _cache_lock:
+        cached = _cache.get(code)
+        if cached:
+            result, cached_at = cached
+            if datetime.now() - cached_at < timedelta(hours=CACHE_TTL_HOURS):
+                return result
+        # 만료된 캐시 제거
+        _cache.pop(code, None)
+
+    df = _fetch_ohlcv_for_predict(code)
+    if df.empty:
+        return {"error": "주가 데이터를 가져올 수 없습니다."}
+
+    result = _run_prophet(df)
+
+    with _cache_lock:
+        _cache[code] = (result, datetime.now())
+
+    return result
