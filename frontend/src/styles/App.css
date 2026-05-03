@@ -361,6 +361,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; margin: 0; }
 
 .hero-search {
   position: relative;
+  z-index: 40;
   max-width: 620px;
   margin: 32px auto 0;
 }
