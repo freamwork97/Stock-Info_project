@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import type { ExchangeRate } from '../types/api';
+import type { ExchangeRateTableProps } from '../types/components';
 
-// ExchangeRateTable: 기존 props 방식(exchangeRates 배열 전달)과
-// 자체 fetch 방식 모두 지원. props가 없으면 직접 API 호출.
-function ExchangeRateTable({ exchangeRates: propRates }) {
-  const [rates, setRates] = useState([]);
+function ExchangeRateTable({ exchangeRates: propRates }: ExchangeRateTableProps): JSX.Element {
+  const [rates, setRates] = useState<ExchangeRate[]>([]);
 
   useEffect(() => {
     if (propRates) {
@@ -12,7 +12,7 @@ function ExchangeRateTable({ exchangeRates: propRates }) {
     }
     fetch('/exchange_rate')
       .then(r => r.json())
-      .then(d => setRates(Array.isArray(d) ? d : []))
+      .then((d: ExchangeRate[]) => setRates(Array.isArray(d) ? d : []))
       .catch(() => setRates([]));
   }, [propRates]);
 

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import type { FinancialStatement } from '../types/api';
+import type { SearchTermProps } from '../types/components';
 
-function FinancialStatements({ searchTerm }) {
-  const [rows, setRows] = useState([]);
+function FinancialStatements({ searchTerm }: SearchTermProps): JSX.Element {
+  const [rows, setRows] = useState<FinancialStatement[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     setLoading(true);
     fetch(`/financial_statements/${encodeURIComponent(searchTerm)}`)
       .then(r => r.json())
-      .then(d => setRows(Array.isArray(d) ? d : []))
+      .then((d: FinancialStatement[]) => setRows(Array.isArray(d) ? d : []))
       .catch(() => setRows([]))
       .finally(() => setLoading(false));
   }, [searchTerm]);
