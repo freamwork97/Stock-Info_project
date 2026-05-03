@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchInput from '../components/SearchInput';
 
-function PredictPrePage() {
+function PredictPrePage(): JSX.Element {
   return (
     <div className="page fade-in">
       <div className="hero">

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BackLink } from '../components/Bits';
+import type { PostForm } from '../types/api';
 
-function WritePage() {
-  const [form, setForm] = useState({ title: '', author: '', password: '', content: '' });
+function WritePage(): JSX.Element {
+  const [form, setForm] = useState<PostForm>({ title: '', author: '', password: '', content: '' });
   const navigate = useNavigate();
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const r = await fetch('/post/save/', {
       method: 'POST',
@@ -44,7 +45,7 @@ function WritePage() {
           </div>
           <div className="field">
             <label className="field-label">내용</label>
-            <textarea className="textarea" rows="10" placeholder="본문을 입력하세요" required
+            <textarea className="textarea" rows={10} placeholder="본문을 입력하세요" required
               value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
           </div>
           <div className="flex justify-between items-center mt-4">

@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from '../components/Pagination';
+import type { Post } from '../types/api';
 
 const PER_PAGE = 8;
 
-function PostListPage() {
-  const [posts, setPosts] = useState([]);
+function PostListPage(): JSX.Element {
+  const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetch('/post')
       .then(r => r.json())
-      .then(d => setPosts(Array.isArray(d) ? d : []))
+      .then((d: Post[]) => setPosts(Array.isArray(d) ? d : []))
       .catch(() => setPosts([]));
   }, []);
 

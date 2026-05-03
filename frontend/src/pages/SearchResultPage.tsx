@@ -6,36 +6,46 @@ import FinancialStatements from '../components/financialStatements';
 import { Sparkline } from '../components/Charts';
 import { DeltaPill, BackLink, Stat } from '../components/Bits';
 import { delta, fmt } from '../utils/format';
+import type { StockInfo, LatestStockPrice } from '../types/api';
 
-function SearchResultPage() {
-  const { searchTerm } = useParams();
-  const [info, setInfo] = useState(null);
-  const [price, setPrice] = useState({});
+function SearchResultPage(): JSX.Element {
+  const { searchTerm = '' } = useParams<{ searchTerm: string }>();
+  const [info, setInfo] = useState<StockInfo | null>(null);
+  const [price, setPrice] = useState<LatestStockPrice | null>(null);
   const [tab, setTab] = useState('뉴스');
 
   useEffect(() => {
     fetch(`/stock/${encodeURIComponent(searchTerm)}`)
       .then(r => r.json())
-      .then(setInfo)
+      .then((d: StockInfo) => setInfo(d))
       .catch(() => setInfo(null));
   }, [searchTerm]);
 
   useEffect(() => {
-    let timer;
+    let timer: number;
     const load = () => {
       fetch(`/get_stock_price/${encodeURIComponent(searchTerm)}`)
         .then(r => r.json())
-        .then(setPrice)
+        .then((d: { 날짜: string[]; 시가: number[]; 고가: number[]; 저가: number[]; 종가: number[]; 거래량: number[] }) => {
+          setPrice({
+            고가: d.고가.slice(-1)[0],
+            전일종가: d.종가.slice(-2)[0],
+            시가: d.시가.slice(-1)[0],
+            저가: d.저가.slice(-1)[0],
+            종가: d.종가.slice(-1)[0],
+            거래량: d.거래량.slice(-1)[0],
+          });
+        })
         .catch(() => {});
     };
     load();
-    timer = setInterval(load, 20000);
+    timer = window.setInterval(load, 20000);
     return () => clearInterval(timer);
   }, [searchTerm]);
 
-  const closes = (info?.daily_prices || []).map(d => Number(d.close ?? d.종가)).filter(Boolean);
-  const cur = Number(price.종가) || closes[closes.length - 1];
-  const prev = Number(price.전일종가) || closes[closes.length - 2];
+  const closes = (info?.daily_prices || []).map(d => Number(d.close ?? 0)).filter(Boolean);
+  const cur = price?.종가 ?? closes[closes.length - 1];
+  const prev = price?.전일종가 ?? closes[closes.length - 2];
 
   return (
     <div className="page fade-in">
@@ -78,11 +88,11 @@ function SearchResultPage() {
           )}
 
           <div className="grid grid-4 mt-6 gap-md">
-            <Stat label="시가"     value={fmt(price.시가)} />
-            <Stat label="고가"     value={fmt(price.고가)} cls="up" />
-            <Stat label="저가"     value={fmt(price.저가)} cls="down" />
-            <Stat label="거래량"   value={fmt(price.거래량, { compact: true })} />
-            <Stat label="전일종가" value={fmt(price.전일종가)} />
+            <Stat label="시가"     value={fmt(price?.시가)} />
+            <Stat label="고가"     value={fmt(price?.고가)} cls="up" />
+            <Stat label="저가"     value={fmt(price?.저가)} cls="down" />
+            <Stat label="거래량"   value={fmt(price?.거래량, { compact: true })} />
+            <Stat label="전일종가" value={fmt(price?.전일종가)} />
           </div>
         </div>
 

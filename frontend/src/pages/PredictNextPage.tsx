@@ -4,17 +4,18 @@ import { PredictChartView } from '../components/Charts';
 import { BackLink, DeltaPill } from '../components/Bits';
 import SearchInput from '../components/SearchInput';
 import { fmt } from '../utils/format';
+import type { StockInfo, PredictionData, PredictResponse } from '../types/api';
 
-function PredictNextPage() {
-  const { searchTerm } = useParams();
-  const [info, setInfo] = useState(null);
-  const [pred, setPred] = useState(null);
+function PredictNextPage(): JSX.Element {
+  const { searchTerm = '' } = useParams<{ searchTerm: string }>();
+  const [info, setInfo] = useState<StockInfo | null>(null);
+  const [pred, setPred] = useState<PredictionData | null>(null);
 
   useEffect(() => {
-    fetch(`/stock/${encodeURIComponent(searchTerm)}`).then(r => r.json()).then(setInfo).catch(() => {});
+    fetch(`/stock/${encodeURIComponent(searchTerm)}`).then(r => r.json()).then((d: StockInfo) => setInfo(d)).catch(() => {});
     fetch(`/predict_stock/${encodeURIComponent(searchTerm)}`)
       .then(r => r.json())
-      .then(d => setPred({
+      .then((d: PredictResponse) => setPred({
         dates: d.날짜, close: d.예측종가, high: d.예측고가, low: d.예측저가,
       }))
       .catch(() => setPred(null));
@@ -44,7 +45,7 @@ function PredictNextPage() {
               {info?.code && <span className="body-sm" style={{ marginLeft: 8 }}>{info.code}</span>}
             </h1>
           </div>
-          {lastClose && lastPred && (
+          {lastClose != null && lastPred != null && (
             <div className="flex gap-md items-center">
               <div>
                 <div className="body-sm">현재가</div>

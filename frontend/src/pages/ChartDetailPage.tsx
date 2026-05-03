@@ -4,46 +4,74 @@ import { CandleChartView } from '../components/Charts';
 import { BackLink, MiniStat, DeltaPill } from '../components/Bits';
 import SearchInput from '../components/SearchInput';
 import { fmt, delta } from '../utils/format';
+import type { StockInfo } from '../types/api';
+import type { CandleData } from '../types/components';
 
-function ChartDetailPage() {
-  const { searchTerm } = useParams();
-  const [info, setInfo] = useState(null);
+interface AggregatedCandle extends CandleData {
+  _k?: string;
+}
+
+type PeriodKind = 'week' | 'month';
+
+function aggregate(candles: CandleData[], kind: PeriodKind): CandleData[] {
+  const out: AggregatedCandle[] = [];
+  let cur: AggregatedCandle | null = null;
+  candles.forEach(c => {
+    const d = new Date(c.date);
+    const k = kind === 'month' ? c.date.slice(0, 7)
+      : `${d.getFullYear()}-W${Math.floor((d.getDate() + 6) / 7)}-${d.getMonth()}`;
+    if (!cur || cur._k !== k) {
+      if (cur) out.push(cur);
+      cur = { ...c, _k: k };
+    } else {
+      cur.high = Math.max(cur.high, c.high);
+      cur.low = Math.min(cur.low, c.low);
+      cur.close = c.close;
+      cur.volume = (cur.volume ?? 0) + (c.volume ?? 0);
+    }
+  });
+  if (cur) out.push(cur);
+  return out;
+}
+
+function ChartDetailPage(): JSX.Element {
+  const { searchTerm = '' } = useParams<{ searchTerm: string }>();
+  const [info, setInfo] = useState<StockInfo | null>(null);
   const [period, setPeriod] = useState('일봉');
   const [days, setDays] = useState(120);
   const [movingAverages, setMovingAverages] = useState([5, 20, 60]);
 
   useEffect(() => {
     fetch(`/stock/${encodeURIComponent(searchTerm)}`)
-      .then(r => r.json()).then(setInfo).catch(() => setInfo(null));
+      .then(r => r.json()).then((d: StockInfo) => setInfo(d)).catch(() => setInfo(null));
   }, [searchTerm]);
 
-  // daily_prices in info has date,open,high,low,close,volume
-  const allCandles = useMemo(() => {
+  const allCandles = useMemo<CandleData[]>(() => {
     return (info?.daily_prices || []).map(d => ({
       date: d.date, open: +d.open, high: +d.high,
       low: +d.low, close: +d.close, volume: +d.volume,
     })).filter(c => !isNaN(c.close));
   }, [info]);
 
-  const candles = useMemo(() => {
+  const candles = useMemo<CandleData[]>(() => {
     const slice = allCandles.slice(-days);
     if (period === '주봉') return aggregate(slice, 'week');
     if (period === '월봉') return aggregate(slice, 'month');
     return slice;
   }, [allCandles, days, period]);
 
-  const last = candles[candles.length - 1] || {};
-  const prev = candles[candles.length - 2] || {};
-  const { isUp } = delta(last.close, prev.close);
+  const last = candles[candles.length - 1] ?? ({} as Partial<CandleData>);
+  const prev = candles[candles.length - 2] ?? ({} as Partial<CandleData>);
+  const { isUp } = delta(last.close ?? 0, prev.close ?? 0);
 
   const periodOptions = [
     { l: '1개월', v: 22 }, { l: '3개월', v: 66 },
     { l: '6개월', v: 132 }, { l: '1년', v: 240 },
   ];
   const maOptions = [5, 20, 60, 120, 200];
-  const maColors = { 5: '#22c55e', 20: '#a855f7', 60: '#f59e0b', 120: '#3b82f6', 200: '#ec4899' };
+  const maColors: Record<number, string> = { 5: '#22c55e', 20: '#a855f7', 60: '#f59e0b', 120: '#3b82f6', 200: '#ec4899' };
 
-  function toggleMA(p) {
+  function toggleMA(p: number) {
     setMovingAverages(arr => arr.includes(p) ? arr.filter(x => x !== p) : [...arr, p].sort((a, b) => a - b));
   }
 
@@ -124,27 +152,6 @@ function ChartDetailPage() {
       )}
     </div>
   );
-}
-
-function aggregate(candles, kind) {
-  const out = [];
-  let cur = null;
-  candles.forEach(c => {
-    const d = new Date(c.date);
-    const k = kind === 'month' ? c.date.slice(0, 7)
-      : `${d.getFullYear()}-W${Math.floor((d.getDate() + 6) / 7)}-${d.getMonth()}`;
-    if (!cur || cur._k !== k) {
-      if (cur) out.push(cur);
-      cur = { ...c, _k: k };
-    } else {
-      cur.high = Math.max(cur.high, c.high);
-      cur.low = Math.min(cur.low, c.low);
-      cur.close = c.close;
-      cur.volume += c.volume;
-    }
-  });
-  if (cur) out.push(cur);
-  return out;
 }
 
 export default ChartDetailPage;

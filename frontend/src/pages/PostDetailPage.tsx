@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BackLink } from '../components/Bits';
+import type { Post } from '../types/api';
 
-function PostDetailPage() {
-  const { id } = useParams();
-  const [post, setPost] = useState(null);
-  const [error, setError] = useState(null);
+function PostDetailPage(): JSX.Element {
+  const { id } = useParams<{ id: string }>();
+  const [post, setPost] = useState<Post | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`/post/${id}`)
       .then(r => r.json())
-      .then(d => setPost(d?.[0] || null))
+      .then((d: Post[]) => setPost(d?.[0] || null))
       .catch(() => setPost(null));
   }, [id]);
 

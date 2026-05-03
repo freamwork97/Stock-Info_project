@@ -4,16 +4,17 @@ import ExchangeRateTable from '../components/ExchangeRateTable';
 import { LineChartView } from '../components/Charts';
 import { DeltaPill } from '../components/Bits';
 import { delta, fmt, fmtPct } from '../utils/format';
+import type { KeyIndexState, KeyIndexResponse } from '../types/api';
 
-function MainPage() {
-  const [keyIndex, setKeyIndex] = useState({});
-  const [selectedKey, setSelectedKey] = useState(null);
+function MainPage(): JSX.Element {
+  const [keyIndex, setKeyIndex] = useState<KeyIndexState>({});
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/key_index')
       .then(r => r.json())
-      .then(data => {
-        const next = {};
+      .then((data: KeyIndexResponse) => {
+        const next: KeyIndexState = {};
         Object.keys(data).forEach(name => {
           const dates = Object.keys(data[name]);
           const last = data[name][dates[dates.length - 1]];
@@ -32,7 +33,6 @@ function MainPage() {
 
   return (
     <div className="page">
-      {/* Hero */}
       <section className="hero fade-in">
         <div className="eyebrow">실시간 한국 주식 정보</div>
         <h1 className="hero-title mt-3">
@@ -50,7 +50,6 @@ function MainPage() {
         </div>
       </section>
 
-      {/* Index ticker */}
       {indices.length > 0 && (
         <section className="mt-8 fade-in">
           <div className="ticker-row">

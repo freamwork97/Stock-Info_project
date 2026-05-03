@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BackLink } from '../components/Bits';
+import type { Post } from '../types/api';
 
-function UpdatePostPage() {
-  const { id } = useParams();
+function UpdatePostPage(): JSX.Element {
+  const { id } = useParams<{ id: string }>();
   const [content, setContent] = useState('');
   const [password, setPassword] = useState('');
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState<Post | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`/post/${id}`)
       .then(r => r.json())
-      .then(d => {
+      .then((d: Post[]) => {
         const p = d?.[0];
         if (p) { setPost(p); setContent(p.content || ''); }
       });
   }, [id]);
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const r = await fetch(`/posts/${id}/${encodeURIComponent(content)}/${encodeURIComponent(password)}`, { method: 'PUT' });
     if (r.ok) { alert('수정되었습니다.'); navigate(`/post/${id}`); }
@@ -34,7 +35,7 @@ function UpdatePostPage() {
         <form onSubmit={submit}>
           <div className="field">
             <label className="field-label">내용</label>
-            <textarea className="textarea" rows="12" required
+            <textarea className="textarea" rows={12} required
               value={content} onChange={e => setContent(e.target.value)} />
           </div>
           <div className="field" style={{ maxWidth: 280 }}>
