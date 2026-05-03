@@ -42,7 +42,7 @@ function MainPage(): JSX.Element {
         <p className="hero-sub">가격 · 차트 · 재무제표 · 뉴스 · 예측까지, 검색 한 번으로.</p>
         <SearchInput variant="hero" toPage="/" placeholder="종목명 또는 코드 입력 (예: 삼성전자, 005930)" />
         <div className="hero-quick">
-          {['삼성전자', 'SK하이닉스', 'NAVER', '카카오', '현대차'].map(t => (
+          {['삼성전자', 'SK하이닉스', 'NAVER', '카카오', '현대자동차'].map(t => (
             <a key={t} href={`/search/${encodeURIComponent(t)}`} className="hero-quick-tag">
               <span style={{ color: 'var(--text-3)' }}>#</span>{t}
             </a>
