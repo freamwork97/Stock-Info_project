@@ -5,4 +5,5 @@ financial_statements/
 corpCode/
 test/
 .DS_Store
-.venvfrontend/dist/
+.venv
+frontend/dist/
