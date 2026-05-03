@@ -93,14 +93,29 @@ CREATE TABLE posts (
 
 ### 사전 요구사항
 - Docker · Docker Compose
-- `conf/config.ini` (DB 접속 정보)
+- `conf/` 디렉토리 설정 파일 (git에 포함되지 않음)
+
+예시 파일을 복사해 실제 값으로 채워주세요.
+
+```bash
+cp conf/config.docker.ini.example conf/config.docker.ini
+```
 
 ```ini
 [database]
-host     = mysql
-user     = root
-password = yourpassword
-db_name  = stock_db
+host     = mysql          # Docker 환경은 mysql, 로컬은 localhost
+user     = your_db_user
+password = your_db_password
+db_name  = your_db_name
+
+[dart]
+# https://opendart.fss.or.kr 에서 발급
+api_key  = your_dart_api_key
+
+[naver_API]
+# https://developers.naver.com 에서 발급
+Client_ID     = your_naver_client_id
+Client_Secret = your_naver_client_secret
 ```
 
 ### 실행
