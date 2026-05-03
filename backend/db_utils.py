@@ -28,13 +28,20 @@ def get_stock_info(stock_name):
     conn = get_connection()
     try:
         with conn.cursor() as curs:
-            sql = f"""
-                SELECT company, code, last_update
-                FROM company_info
-                WHERE company LIKE %s
-            """
-            curs.execute(sql, (f'%{stock_name}%',))
+            # 정확히 일치하는 이름 우선
+            curs.execute(
+                "SELECT company, code, last_update FROM company_info WHERE company = %s",
+                (stock_name,)
+            )
             result = curs.fetchone()
+
+            # 없으면 LIKE 검색 — 짧은 이름(더 정확한 매칭) 우선
+            if not result:
+                curs.execute(
+                    "SELECT company, code, last_update FROM company_info WHERE company LIKE %s ORDER BY LENGTH(company) ASC LIMIT 1",
+                    (f'%{stock_name}%',)
+                )
+                result = curs.fetchone()
 
             if not result:
                 raise HTTPException(status_code=404, detail="Stock not found")
