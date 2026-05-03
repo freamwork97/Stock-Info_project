@@ -12,7 +12,7 @@ import UpdatePostPage from './pages/UpdatePostPage';
 import PredictPrePage from './pages/PredictPrePage';
 import PredictNextPage from './pages/PredictNextPage';
 
-function App() {
+function App(): JSX.Element {
   return (
     <Router>
       <div className="app-shell">
