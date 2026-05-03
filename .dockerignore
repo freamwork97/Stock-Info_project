@@ -3,12 +3,17 @@
 .DS_Store
 .claude
 
+# 리팩토링 작업 디렉토리 (빌드 불필요)
+frontend-refactor/
+
 # 프론트엔드 빌드 아티팩트
 frontend/node_modules
 frontend/build
+frontend/.cache
 
 # 파이썬 캐시 및 가상환경
 __pycache__
+backend/__pycache__
 *.pyc
 *.pyo
 .venv
@@ -22,3 +27,7 @@ conf/
 # 데이터 파일
 financial_statements/*.csv
 corpCode/
+
+# 개발 전용
+*.md
+README.md
