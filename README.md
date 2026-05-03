@@ -1,159 +1,131 @@
-# 주식 뉴스 및 데이터 정보 제공 사이트
+# Stock Info
 
-## 프로젝트 목적
-- 주식에 필요한 정보를 한눈에 확인하는 것
-
-### 스킬
-
-#### 백엔드
-- Python(FastAPI)
-- MySQL
-
-#### 프론트엔드
-- React
-- BootStrap
+한국 주식 정보를 한눈에 확인하는 웹 서비스.  
+종목 검색 한 번으로 가격 · 차트 · 재무제표 · 뉴스 · 예측까지 제공합니다.
 
 ---
 
-### 프로젝트 개요  
+## 기술 스택
 
-원하는 종목의 주식을 검색시 주식의 가격, 차트, 재무제표 및 뉴스를 제공
-
-|항목      | 설명                                                                               |
-|----------|-----------------------------------------------------------------------------------|
-|데이터수집| Python으로 MySQL 데이터 저장                                                       |
-|뉴스      | 네이버 크롤링                                                                      |
-|환율      | 네이버 크롤링                                                                      |
-|재무제표  | [OpenDART](https://opendart.fss.or.kr/intro/main.do) 활용                          |
-|디자인    | BootStrap 활용                                                                     |
-|주가데이터| 네이버 크롤링으로 데이터베이스 수집 및 저장, pykrx 라이브러리 활용                    |
-|주요지수  | FinanceDataReader 라이브러리 활용                                                   |
-|게시판    | 글 작성, 수정, 목록, 삭제는 데이터베이스 활용                                        |
-|머신러닝  | [Facebook Prophet](https://facebook.github.io/prophet/docs/quick_start.html) 활용  |
+| 영역 | 기술 |
+|------|------|
+| 백엔드 | Python 3.11 · FastAPI · SQLAlchemy |
+| 프론트엔드 | React 18 · TypeScript · Chart.js · ECharts |
+| 데이터베이스 | MySQL 8 |
+| 인프라 | Docker · Docker Compose · Nginx |
+| 데이터 소스 | yfinance · pykrx · Naver 크롤링 · Facebook Prophet |
 
 ---
 
-## 데이터베이스 구성
+## 주요 기능
+
+| 기능 | 설명 |
+|------|------|
+| 종목 검색 | 종목명/코드 검색, 자동완성 |
+| 주가 정보 | 현재가 · 시가 · 고가 · 저가 · 거래량 (20초 자동 갱신) |
+| 캔들 차트 | 일봉/주봉/월봉 · 이동평균선(MA5~200) · 기간 필터 |
+| 재무제표 | yfinance 기반 4개년 IS/BS · 연도별 추이 바 차트 |
+| 관련 뉴스 | 네이버 뉴스 크롤링 (썸네일 포함) |
+| 주요 지수 | 코스피 · 코스닥 · 나스닥 · 다우 · S&P500 · 닛케이 |
+| 환율 | 네이버 실시간 환율 크롤링 |
+| 주가 예측 | Facebook Prophet 시계열 모델 (1년 예측) |
+| 게시판 | 비회원 CRUD (비밀번호 기반 수정/삭제) |
+
+---
+
+## 백엔드 구조
+
+```
+backend/
+├── main.py              # FastAPI 앱 초기화 · 라우터 등록
+├── schemas.py           # Pydantic 응답 모델
+├── core/
+│   ├── db.py            # SQLAlchemy Connection Pool
+│   ├── stock_queries.py # 주식 DB 쿼리
+│   ├── post_queries.py  # 게시글 DB 쿼리
+│   └── financial_queries.py
+├── api/
+│   ├── stock.py         # /stock · /get_stock_price · /company_names
+│   ├── market.py        # /key_index · /exchange_rate
+│   ├── news.py          # /news
+│   ├── financial.py     # /financial_statements
+│   ├── predict.py       # /predict_stock
+│   └── post.py          # /post CRUD
+├── services/
+│   ├── stock_service.py     # yfinance OHLCV · pykrx 실시간 가격
+│   ├── predict_service.py   # Prophet 예측
+│   └── financial_service.py # yfinance 재무제표
+├── news_utils.py        # 네이버 뉴스 크롤러
+├── exchange_rate.py     # 환율 크롤러
+├── key_index.py         # 주요 지수 조회
+└── corp_code.py         # 재무제표 DB 조회 (레거시)
+```
+
+---
+
+## 데이터베이스
+
+`daily_price` 테이블은 제거되었습니다. OHLCV 데이터는 yfinance를 통해 실시간 조회합니다.
 
 ```sql
-CREATE TABLE IF NOT EXISTS company_info (
-    code VARCHAR(20),
-    company VARCHAR(40),
+-- 종목 코드/이름 조회용
+CREATE TABLE company_info (
+    code        VARCHAR(20),
+    company     VARCHAR(40),
     last_update DATE,
-    PRIMARY KEY (code))
-```
+    PRIMARY KEY (code)
+);
 
-```sql
-CREATE TABLE IF NOT EXISTS daily_price (
-    code VARCHAR(20),
-    date DATE,
-    open BIGINT(20),
-    high BIGINT(20),
-    low BIGINT(20),
-    close BIGINT(20),
-    diff BIGINT(20),
-    volume BIGINT(20),
-    PRIMARY KEY (code, date))
-```
-
-```sql
-CREATE TABLE IF NOT EXISTS financial_statements (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    bsns_year VARCHAR(255),
-    stock_code VARCHAR(255),
-    reprt_code VARCHAR(255),
-    fs_div VARCHAR(255),
-    sj_div VARCHAR(255),
-    account_nm VARCHAR(255),
-    thstrm_nm VARCHAR(255),
-    thstrm_dt VARCHAR(255),
-    thstrm_amount VARCHAR(255),
-    thstrm_add_amount VARCHAR(255),
-    frmtrm_nm VARCHAR(255),
-    frmtrm_dt VARCHAR(255),
-    frmtrm_amount VARCHAR(255),
-    frmtrm_add_amount VARCHAR(255),
-    bfefrmtrm_nm VARCHAR(255),
-    bfefrmtrm_dt VARCHAR(255),
-    brefrmtrm_amount VARCHAR(255),
-    currency VARCHAR(255))
-```
-
-```sql
+-- 게시판
 CREATE TABLE posts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    author VARCHAR(255) NOT NULL,
-    content TEXT,
-    password VARCHAR(255) NOT NULL,
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    title      VARCHAR(255) NOT NULL,
+    author     VARCHAR(255) NOT NULL,
+    content    TEXT,
+    password   VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 ```
-
-```sql
-CREATE TABLE comments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    post_id INT,
-    author VARCHAR(255) NOT NULL,
-    content TEXT,
-    password VARCHAR(255) NOT NULL, 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (post_id) REFERENCES posts(id)
-)
-```
-## 메인페이지
-- 메인페이지는 심플하게
-- 검색창
-- 검색버튼
-- 배치 순서
-    - 검색창옆에 검색버튼
-    - 환율 + 주요지수 
-
-## 검색결과
-- 검색창
-- 검색버튼
-- 새로 검색하면 그 것에 맞게 다시 화면 출력
-- 배치순서
-    - 좌측 상단 검색창 옆에 검색버튼
-    - 좌측 뉴스 제목, 간략한내용(검색창 아래에 배치)
-    - 우측 주식정보 + 차트
-    - 재무제표 하단 배치
-    - 주식정보는 검색시점 현재가 + 전일종가 확인
-    - 차트(Line)
-    - 차트는 종가와 날짜 기준(전일 데이터)
-    
-## 차트 클릭
-- 차트 상세페이지
-- 차트 캔들 사용 상승(red) 하락(blue)
-- 클릭 시점 현재가 + 전일가를 이용한 차트
-- 일봉, 주봉, 월봉 구현(주봉, 월봉은 고민중)
-- 보조지표(차트와 같이 볼 지표는 설정가능하도록)
-  - 이평선제작 
-
-## 게시판
-- 게시판 페이지
-- 비회원으로 진행
-- 글 작성시 작성자와 비밀번호 입력
-- 비밀번호는 글 수정 및 삭제할 때 사용
-- 다른유저들이 확인 가능(서로 내용 공유)
-- 댓글기능(고민중)
-
-## 히트맵(고민중)
-- 당일 거래량 기준 히트맵
-- 검색할 때마다 다르게 만들듯(거래량은 계속 달라진다.)
-
-## ProPhet 예측모델
-- 시계열 데이터 예측 모델로 사용
-- 주가 예측에 사용해볼 예정(제대로 만들 수 있을 지 의문)
-- 재미삼아서 추가해보는 페이지
 
 ---
 
-## 결과
+## 실행 방법
 
-1. 사용자들이 간편하게 종목을 검색해 주식의 가격, 차트, 재무제표, 관련 뉴스 등을 한눈에 확인 가능.
+### 사전 요구사항
+- Docker · Docker Compose
+- `conf/config.ini` (DB 접속 정보)
 
-2. MySQL 데이터베이스를 기반으로 네이버 크롤링, pykrx 라이브러리, OpenDART 등을 주식 데이터와 금융 정보를 제공하며, 게시판 기능을 통해 사용자 간의 정보 공유도 가능.
+```ini
+[database]
+host     = mysql
+user     = root
+password = yourpassword
+db_name  = stock_db
+```
 
-### 참고 문헌
-- 김황후. (2020.07.01). *파이썬 증권 데이터 분석*. 한빛 미디어.
+### 실행
+
+```bash
+docker compose up -d
+```
+
+| 서비스 | 주소 |
+|--------|------|
+| 프론트엔드 | http://localhost |
+| 백엔드 API | http://localhost:8000 |
+| API 문서 | http://localhost:8000/docs |
+
+---
+
+## API 주요 엔드포인트
+
+| Method | Path | 설명 |
+|--------|------|------|
+| GET | `/stock/{name}` | 종목 정보 + 400일 OHLCV |
+| GET | `/get_stock_price/{name}` | pykrx 실시간 가격 |
+| GET | `/company_names/?prefix=` | 종목명 자동완성 |
+| GET | `/financial_statements/{name}` | 4개년 재무제표 |
+| GET | `/predict_stock/{name}` | Prophet 1년 예측 |
+| GET | `/news/{query}` | 네이버 뉴스 (썸네일 포함) |
+| GET | `/key_index` | 주요 지수 |
+| GET | `/exchange_rate` | 환율 |
