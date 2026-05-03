@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from schemas import PredictResponse
-from predict import predict_result
+from services.predict_service import predict_result
 
 router = APIRouter(tags=["predict"])
 

@@ -3,7 +3,7 @@ from typing import List
 
 from schemas import StockInfo, StockPriceResponse
 from db_utils import get_stock_info, get_company_names
-from stock_price import get_stock_price, get_ohlcv
+from services.stock_service import get_stock_price, get_ohlcv
 
 router = APIRouter(tags=["stock"])
 
