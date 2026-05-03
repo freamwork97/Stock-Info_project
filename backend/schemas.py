@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 # ── 주식 ──────────────────────────────────────────
@@ -46,6 +46,13 @@ class NewsItem(BaseModel):
 class ExchangeRateItem(BaseModel):
     currency: str
     exchange_rate: str
+
+
+# ── 재무제표 ──────────────────────────────────────
+class FinancialData(BaseModel):
+    years: List[str]
+    income: Dict[str, List[Optional[int]]]
+    balance: Dict[str, List[Optional[int]]]
 
 
 # ── 게시글 ────────────────────────────────────────

@@ -41,12 +41,10 @@ export interface NewsItem {
   link: string;
 }
 
-export interface FinancialStatement {
-  사업연도: string;
-  재무제표구분: string;   // 'BS' | 'IS'
-  계정명: string;
-  당기명: string;
-  당기금액: number | null;  // 억원 단위
+export interface FinancialData {
+  years: string[];
+  income: Record<string, (number | null)[]>;
+  balance: Record<string, (number | null)[]>;
 }
 
 export type KeyIndexResponse = Record<string, Record<string, number>>;
