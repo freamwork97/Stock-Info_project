@@ -1,6 +1,6 @@
 conf/*.ini
 database/
-backend/__pycache__
+**/__pycache__/
 financial_statements/
 corpCode/
 test/
