@@ -1,29 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { SearchInputProps } from '../types/components';
 
-// hero / inline 둘 다 가능한 검색 인풋. variant: 'hero' | 'inline'
-function SearchInput({ variant = 'hero', toPage = '/', placeholder = '종목명 또는 코드 입력' }) {
+function SearchInput({ variant = 'hero', toPage = '/', placeholder = '종목명 또는 코드 입력' }: SearchInputProps): JSX.Element {
   const [q, setQ] = useState('');
-  const [suggest, setSuggest] = useState([]);
+  const [suggest, setSuggest] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const ref = useRef(null);
+  const ref = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!q) { setSuggest([]); return; }
     fetch(`/company_names/?prefix=${encodeURIComponent(q)}`)
       .then(r => r.json())
-      .then(data => setSuggest((data || []).slice(0, 6)))
+      .then((data: string[]) => setSuggest((data || []).slice(0, 6)))
       .catch(() => setSuggest([]));
   }, [q]);
 
   useEffect(() => {
-    const onClick = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
     document.addEventListener('click', onClick);
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  const go = (term) => {
+  const go = (term: string) => {
     if (!term) return;
     setOpen(false); setQ('');
     if (toPage === 'predict') navigate(`/predict/${encodeURIComponent(term)}`);
@@ -31,7 +33,7 @@ function SearchInput({ variant = 'hero', toPage = '/', placeholder = '종목명 
     else navigate(`/search/${encodeURIComponent(term)}`);
   };
 
-  const submit = (e) => { e.preventDefault(); go(q.trim()); };
+  const submit = (e: React.FormEvent) => { e.preventDefault(); go(q.trim()); };
 
   if (variant === 'hero') {
     return (
@@ -59,7 +61,6 @@ function SearchInput({ variant = 'hero', toPage = '/', placeholder = '종목명 
     );
   }
 
-  // inline (sticky header in detail pages)
   return (
     <form onSubmit={submit} ref={ref} style={{ position: 'relative', maxWidth: 360 }}>
       <div className="nav-search" style={{ width: '100%' }}>

@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 
-function Navi() {
+interface NavLink {
+  label: string;
+  to: string;
+}
+
+function Navi(): JSX.Element {
   const [q, setQ] = useState('');
-  const [suggest, setSuggest] = useState([]);
+  const [suggest, setSuggest] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const ref = useRef(null);
+  const ref = useRef<HTMLFormElement>(null);
 
-  const links = [
+  const links: NavLink[] = [
     { label: '홈', to: '/' },
     { label: '주가예측', to: '/predict' },
     { label: '커뮤니티', to: '/post' },
@@ -20,17 +25,19 @@ function Navi() {
     if (!q) { setSuggest([]); return; }
     fetch(`/company_names/?prefix=${encodeURIComponent(q)}`)
       .then(r => r.json())
-      .then(data => setSuggest((data || []).slice(0, 6)))
+      .then((data: string[]) => setSuggest((data || []).slice(0, 6)))
       .catch(() => setSuggest([]));
   }, [q]);
 
   useEffect(() => {
-    const onClick = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
     document.addEventListener('click', onClick);
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  const submit = e => {
+  const submit = (e?: React.FormEvent) => {
     e?.preventDefault?.();
     const t = q.trim();
     if (!t) return;
