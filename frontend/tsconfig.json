@@ -5,8 +5,8 @@
     "allowJs": true,
     "checkJs": false,
     "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -19,7 +19,8 @@
     "strictFunctionTypes": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts"]
 }
