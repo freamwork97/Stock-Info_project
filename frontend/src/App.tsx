@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import Navi from './components/Navi';
 import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
@@ -12,6 +12,12 @@ import UpdatePostPage from './pages/UpdatePostPage';
 import PredictPrePage from './pages/PredictPrePage';
 import PredictNextPage from './pages/PredictNextPage';
 import MarketPage from './pages/MarketPage';
+
+// searchTerm이 바뀔 때 PredictNextPage를 완전히 remount해서 이전 차트 잔상 방지
+function PredictNextPageWrapper(): JSX.Element {
+  const { searchTerm = '' } = useParams<{ searchTerm: string }>();
+  return <PredictNextPage key={searchTerm} />;
+}
 
 function App(): JSX.Element {
   return (
@@ -28,7 +34,7 @@ function App(): JSX.Element {
           <Route path="/write" element={<WritePage />} />
           <Route path="/update/:id" element={<UpdatePostPage />} />
           <Route path="/predict" element={<PredictPrePage />} />
-          <Route path="/predict/:searchTerm" element={<PredictNextPage />} />
+          <Route path="/predict/:searchTerm" element={<PredictNextPageWrapper />} />
         </Routes>
         <Footer />
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PredictChartView } from '../components/Charts';
 import { BackLink, DeltaPill } from '../components/Bits';
@@ -10,30 +10,37 @@ function PredictNextPage(): JSX.Element {
   const { searchTerm = '' } = useParams<{ searchTerm: string }>();
   const [info, setInfo] = useState<StockInfo | null>(null);
   const [pred, setPred] = useState<PredictionData | null>(null);
-  const [predLoading, setPredLoading] = useState(true);
+  const [ready, setReady] = useState(false);   // 두 fetch 모두 완료 시 true
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    setInfo(null); setPred(null); setPredLoading(true); setElapsed(0);
-    fetch(`/stock/${encodeURIComponent(searchTerm)}`).then(r => r.json()).then((d: StockInfo) => setInfo(d)).catch(() => {});
-    fetch(`/predict_stock/${encodeURIComponent(searchTerm)}`)
-      .then(r => r.json())
-      .then((d: PredictResponse) => {
-        setPred({ dates: d.날짜, close: d.예측종가, high: d.예측고가, low: d.예측저가 });
-        setPredLoading(false);
+    setReady(false); setElapsed(0);
+
+    // 주가 정보와 예측을 병렬로 fetch, 둘 다 완료되면 한 번에 state 업데이트
+    const stockFetch = fetch(`/stock/${encodeURIComponent(searchTerm)}`).then(r => r.json()) as Promise<StockInfo>;
+    const predictFetch = fetch(`/predict_stock/${encodeURIComponent(searchTerm)}`).then(r => r.json()) as Promise<PredictResponse>;
+
+    Promise.all([stockFetch, predictFetch])
+      .then(([stockData, predData]) => {
+        setInfo(stockData);
+        setPred({ dates: predData.날짜, close: predData.예측종가, high: predData.예측고가, low: predData.예측저가 });
+        setReady(true);
       })
-      .catch(() => { setPred(null); setPredLoading(false); });
+      .catch(() => setReady(true));   // 에러나도 스피너 해제
   }, [searchTerm]);
 
   // 경과 시간 카운터
   useEffect(() => {
-    if (!predLoading) return;
+    if (ready) return;
     const t = window.setInterval(() => setElapsed(s => s + 1), 1000);
     return () => clearInterval(t);
-  }, [predLoading]);
+  }, [ready]);
 
-  // DB는 DESC(최신→과거) 순, 차트·lastClose 계산을 위해 ASC로 뒤집음
-  const history = (info?.daily_prices || []).map(d => ({ date: d.date, close: +d.close })).filter(h => h.close).reverse();
+  // useMemo로 history 참조 고정 → PredictChartView useEffect 불필요한 재실행 방지
+  const history = useMemo(
+    () => (info?.daily_prices || []).map(d => ({ date: d.date, close: +d.close })).filter(h => h.close).reverse(),
+    [info]
+  );
   const lastClose = history[history.length - 1]?.close;
   const lastPred = pred?.close?.[pred.close.length - 1];
 
@@ -74,7 +81,7 @@ function PredictNextPage(): JSX.Element {
             </div>
           )}
         </div>
-        {pred && history.length ? (
+        {ready && pred && history.length ? (
           <PredictChartView history={history} prediction={pred} height={400} />
         ) : (
           <div style={{ height: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
@@ -82,11 +89,9 @@ function PredictNextPage(): JSX.Element {
               <circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="60" strokeDashoffset="20" />
             </svg>
             <div style={{ fontWeight: 600, color: 'var(--text-2)' }}>
-              {!history.length ? '데이터 불러오는 중…' : `Prophet 예측 계산 중… (${elapsed}초 경과)`}
+              {`Prophet 예측 계산 중… (${elapsed}초 경과)`}
             </div>
-            {history.length > 0 && (
-              <div style={{ fontSize: 13, color: 'var(--text-3)' }}>보통 30~60초 소요됩니다</div>
-            )}
+            <div style={{ fontSize: 13, color: 'var(--text-3)' }}>보통 30~60초 소요됩니다</div>
           </div>
         )}
         <div className="card-pad mt-6" style={{ background: 'var(--surface-2)', borderRadius: 12, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6 }}>

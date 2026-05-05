@@ -162,36 +162,79 @@ export function PredictChartView({ history, prediction, height = 360 }: PredictC
     const grid = getCSSVar('--border');
     const text = getCSSVar('--text-3');
 
-    const histData = history.map(h => ({ x: new Date(h.date).valueOf(), y: +h.close }));
+    // 최근 90일만 표시
+    const recent = history.slice(-90);
+    const histData = recent.map(h => ({ x: new Date(h.date).valueOf(), y: +h.close }));
     let predClose: { x: number; y: number }[] = [];
-    let predHigh: { x: number; y: number }[] = [];
-    let predLow: { x: number; y: number }[] = [];
     if (prediction) {
       const lastX = histData[histData.length - 1];
       predClose = [lastX, ...prediction.dates.map((d, i) => ({ x: new Date(d).valueOf(), y: +prediction.close[i] }))];
-      predHigh = prediction.dates.map((d, i) => ({ x: new Date(d).valueOf(), y: +prediction.high[i] }));
-      predLow = prediction.dates.map((d, i) => ({ x: new Date(d).valueOf(), y: +prediction.low[i] }));
     }
 
     chart.current = new Chart(ref.current, {
       type: 'line',
       data: {
         datasets: [
-          { label: '실제 종가', data: histData, borderColor: text2, borderWidth: 2, pointRadius: 0, fill: false, tension: 0.2 },
+          {
+            label: '실제 종가', data: histData,
+            borderColor: text2, borderWidth: 2,
+            pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: text2,
+            fill: false, tension: 0.2,
+          },
           ...(prediction ? [
-            { label: '예측 상한', data: predHigh, borderColor: 'transparent', backgroundColor: brand + '22', fill: '+1', pointRadius: 0 },
-            { label: '예측 하한', data: predLow, borderColor: 'transparent', backgroundColor: 'transparent', fill: false, pointRadius: 0 },
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            { label: '예측 종가', data: predClose, borderColor: brand, borderWidth: 2, borderDash: [6, 4] as any, pointRadius: 0, fill: false, tension: 0.2 },
+            {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              label: '예측 종가 (30일)', data: predClose,
+              borderColor: brand, borderWidth: 2, borderDash: [6, 4] as any,
+              pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: brand,
+              fill: false, tension: 0.2,
+            },
           ] : []),
         ],
       },
       options: {
+        animation: false,
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: text, font: { size: 11 }, filter: (l: { text: string }) => !['예측 상한', '예측 하한'].includes(l.text) } } },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { color: text, font: { size: 11 } } },
+          tooltip: {
+            backgroundColor: 'var(--surface-2, #1e1e2e)',
+            titleColor: text,
+            bodyColor: text2,
+            borderColor: grid,
+            borderWidth: 1,
+            padding: 10,
+            callbacks: {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              title: (items: any[]) => {
+                if (!items.length) return '';
+                const d = new Date(items[0].parsed.x);
+                return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+              },
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              label: (item: any) => {
+                const val = item.parsed.y;
+                if (val == null) return '';
+                return ` ${item.dataset.label}: ${val.toLocaleString('ko-KR')}원`;
+              },
+            },
+          },
+        },
         scales: {
-          x: { type: 'time', time: { unit: 'month' }, grid: { color: grid }, ticks: { color: text, font: { family: 'JetBrains Mono' } } },
-          y: { grid: { color: grid }, ticks: { color: text, font: { family: 'JetBrains Mono' } } },
+          x: {
+            type: 'time', time: { unit: 'day' },
+            grid: { color: grid },
+            ticks: { color: text, font: { family: 'JetBrains Mono' }, maxTicksLimit: 8 },
+          },
+          y: {
+            grid: { color: grid },
+            ticks: {
+              color: text, font: { family: 'JetBrains Mono' },
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              callback: (v: any) => Number(v).toLocaleString('ko-KR'),
+            },
+          },
         },
       } as object,
     });

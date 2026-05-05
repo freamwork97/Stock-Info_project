@@ -82,14 +82,21 @@ def _run_prophet(df: pd.DataFrame) -> dict:
         holidays=_KR_HOLIDAYS,
     )
     model.fit(df)
-    future = model.make_future_dataframe(periods=365)
+    future = model.make_future_dataframe(periods=45)
     forecast = model.predict(future)
 
+    # 미래 날짜만 반환 (학습 기간 제외) + 주말 제거
+    last_train_date = df["ds"].max()
+    fc = forecast[
+        (forecast["ds"] > last_train_date) &
+        (forecast["ds"].dt.dayofweek < 5)   # 0=월 ~ 4=금
+    ].head(30).copy()
+
     return {
-        "날짜": forecast["ds"].dt.strftime("%Y-%m-%d").tolist(),
-        "예측종가": forecast["yhat"].tolist(),
-        "예측고가": forecast["yhat_upper"].tolist(),
-        "예측저가": forecast["yhat_lower"].tolist(),
+        "날짜": fc["ds"].dt.strftime("%Y-%m-%d").tolist(),
+        "예측종가": fc["yhat"].round(0).tolist(),
+        "예측고가": fc["yhat_upper"].round(0).tolist(),
+        "예측저가": fc["yhat_lower"].round(0).tolist(),
     }
 
 
