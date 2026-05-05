@@ -86,7 +86,7 @@ def _run_prophet(df: pd.DataFrame) -> dict:
     forecast = model.predict(future)
 
     return {
-        "날짜": forecast["ds"].dt.strftime("%Y%m%d").tolist(),
+        "날짜": forecast["ds"].dt.strftime("%Y-%m-%d").tolist(),
         "예측종가": forecast["yhat"].tolist(),
         "예측고가": forecast["yhat_upper"].tolist(),
         "예측저가": forecast["yhat_lower"].tolist(),
