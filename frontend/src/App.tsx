@@ -11,6 +11,7 @@ import PostDetailPage from './pages/PostDetailPage';
 import UpdatePostPage from './pages/UpdatePostPage';
 import PredictPrePage from './pages/PredictPrePage';
 import PredictNextPage from './pages/PredictNextPage';
+import MarketPage from './pages/MarketPage';
 
 function App(): JSX.Element {
   return (
@@ -19,6 +20,7 @@ function App(): JSX.Element {
         <Navi />
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/market" element={<MarketPage />} />
           <Route path="/search/:searchTerm" element={<SearchResultPage />} />
           <Route path="/chart/:searchTerm" element={<ChartDetailPage />} />
           <Route path="/post" element={<PostListPage />} />

@@ -10,16 +10,27 @@ function PredictNextPage(): JSX.Element {
   const { searchTerm = '' } = useParams<{ searchTerm: string }>();
   const [info, setInfo] = useState<StockInfo | null>(null);
   const [pred, setPred] = useState<PredictionData | null>(null);
+  const [predLoading, setPredLoading] = useState(true);
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
+    setInfo(null); setPred(null); setPredLoading(true); setElapsed(0);
     fetch(`/stock/${encodeURIComponent(searchTerm)}`).then(r => r.json()).then((d: StockInfo) => setInfo(d)).catch(() => {});
     fetch(`/predict_stock/${encodeURIComponent(searchTerm)}`)
       .then(r => r.json())
-      .then((d: PredictResponse) => setPred({
-        dates: d.날짜, close: d.예측종가, high: d.예측고가, low: d.예측저가,
-      }))
-      .catch(() => setPred(null));
+      .then((d: PredictResponse) => {
+        setPred({ dates: d.날짜, close: d.예측종가, high: d.예측고가, low: d.예측저가 });
+        setPredLoading(false);
+      })
+      .catch(() => { setPred(null); setPredLoading(false); });
   }, [searchTerm]);
+
+  // 경과 시간 카운터
+  useEffect(() => {
+    if (!predLoading) return;
+    const t = window.setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(t);
+  }, [predLoading]);
 
   // DB는 DESC(최신→과거) 순, 차트·lastClose 계산을 위해 ASC로 뒤집음
   const history = (info?.daily_prices || []).map(d => ({ date: d.date, close: +d.close })).filter(h => h.close).reverse();
@@ -63,10 +74,20 @@ function PredictNextPage(): JSX.Element {
             </div>
           )}
         </div>
-        {history.length ? (
+        {pred && history.length ? (
           <PredictChartView history={history} prediction={pred} height={400} />
         ) : (
-          <div className="empty">차트 데이터를 불러오는 중…</div>
+          <div style={{ height: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+            <svg width="36" height="36" viewBox="0 0 36 36" style={{ animation: 'spin 1s linear infinite', color: 'var(--brand)' }}>
+              <circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="60" strokeDashoffset="20" />
+            </svg>
+            <div style={{ fontWeight: 600, color: 'var(--text-2)' }}>
+              {!history.length ? '데이터 불러오는 중…' : `Prophet 예측 계산 중… (${elapsed}초 경과)`}
+            </div>
+            {history.length > 0 && (
+              <div style={{ fontSize: 13, color: 'var(--text-3)' }}>보통 30~60초 소요됩니다</div>
+            )}
+          </div>
         )}
         <div className="card-pad mt-6" style={{ background: 'var(--surface-2)', borderRadius: 12, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6 }}>
           ⚠️ 본 예측은 과거 가격 데이터에만 기반한 통계적 추정치입니다. 투자 결정의 참고 자료로만 활용해주세요.
